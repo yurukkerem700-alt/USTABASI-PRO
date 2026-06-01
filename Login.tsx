@@ -1,93 +1,83 @@
-import { useState } from 'react';
-import { Wallet as WalletIcon, ShieldCheck, ArrowRightLeft, FileText, CreditCard } from 'lucide-react';
+import { CheckCircle, Zap, Shield, Star, Crown } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export default function Wallet() {
+export default function PlusSubscription() {
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-bold">Cüzdan & Ödemeler</h1>
-          <p className="text-slate-500">Güvenli Escrow hesabı ve faturalandırma</p>
+    <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-700 pb-10">
+      <div className="text-center space-y-4 pt-8">
+        <div className="inline-flex items-center justify-center p-3 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 text-white shadow-lg mb-2">
+          <Crown size={32} />
         </div>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+          USTABAŞI <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600">Plus</span>
+        </h1>
+        <p className="text-xl text-slate-500 max-w-2xl mx-auto">
+          Platformun tüm sınırlarını kaldırın. Düşük komisyon, sınırsız AI desteği ve aramalarda her zaman en üstte olma ayrıcalığı.
+        </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Balance Card */}
-        <div className="md:col-span-1 glass p-6 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-20">
-            <WalletIcon size={100} />
+      <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {/* Basic */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="glass p-8 rounded-3xl flex flex-col"
+        >
+          <h3 className="text-xl font-bold mb-2">Standart</h3>
+          <p className="text-sm text-slate-500 mb-6">Platformu keşfetmek için</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">Ücretsiz</span>
           </div>
-          <div className="relative z-10">
-            <p className="text-blue-100 font-medium mb-1">Kullanılabilir Bakiye</p>
-            <h2 className="text-4xl font-bold mb-6">₺ 12.450,00</h2>
-            
-            <p className="text-blue-100 font-medium mb-1 text-sm">Escrow'da Bekleyen (Güvende)</p>
-            <h3 className="text-xl font-bold mb-8">₺ 8.500,00</h3>
-            
-            <div className="flex gap-2">
-              <button className="flex-1 bg-white text-blue-600 py-2 rounded-xl font-bold text-sm hover:bg-blue-50 transition-colors">Para Yükle</button>
-              <button className="flex-1 bg-blue-800 text-white py-2 rounded-xl font-bold text-sm hover:bg-blue-900 transition-colors">Çek</button>
-            </div>
-          </div>
-        </div>
+          <ul className="space-y-4 mb-8 flex-1">
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-slate-300 shrink-0" /> Temel profil oluşturma</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-slate-300 shrink-0" /> Ayda 5 teklif hakkı</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-slate-300 shrink-0" /> %10 Escrow komisyonu</li>
+          </ul>
+          <button className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-slate-600 dark:text-slate-300">Mevcut Plan</button>
+        </motion.div>
 
-        {/* Escrow Contracts */}
-        <div className="md:col-span-2 glass p-6 rounded-3xl">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg flex items-center gap-2"><ShieldCheck className="text-green-500" /> Aktif Güvenli İşlemler</h3>
-            <button className="text-sm text-blue-600 font-medium">Tümünü Gör</button>
+        {/* Plus (Highlighted) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+          className="p-8 rounded-3xl flex flex-col bg-gradient-to-b from-slate-900 to-slate-800 text-white shadow-2xl relative transform md:-translate-y-4 border border-yellow-500/30"
+        >
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-yellow-400 to-amber-600"></div>
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            En Çok Tercih Edilen
           </div>
           
-          <div className="space-y-4">
-            <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/50">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h4 className="font-bold">Ev Elektrik Tesisatı Yenileme</h4>
-                  <p className="text-xs text-slate-500">Ahmet Yılmaz (Usta) ile</p>
-                </div>
-                <span className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-bold">Devam Ediyor</span>
-              </div>
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200 dark:border-slate-700/50">
-                <div className="text-sm">
-                  <span className="text-slate-500">Kilitli Tutar:</span> <span className="font-bold">₺ 8.500</span>
-                </div>
-                <button className="text-sm bg-green-600 text-white px-4 py-1.5 rounded-lg font-medium hover:bg-green-700 transition-colors">İşi Onayla & Öde</button>
-              </div>
-            </div>
+          <h3 className="text-xl font-bold mb-2 text-yellow-400 flex items-center gap-2"><Crown size={20} /> Plus</h3>
+          <p className="text-sm text-slate-400 mb-6">Profesyonel ustalar için</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₺299</span><span className="text-slate-400">/ay</span>
           </div>
-        </div>
-      </div>
+          <ul className="space-y-4 mb-8 flex-1">
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Sınırsız teklif hakkı</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Sadece %3 Escrow komisyonu</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Aramalarda üst sıralarda çıkma</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Plus üye rozeti (Güven verir)</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Sınırsız AI Asistan kullanımı</li>
+          </ul>
+          <button className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-600 font-bold text-white shadow-lg hover:shadow-yellow-500/25 transition-shadow">Plus'a Geç</button>
+        </motion.div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="glass p-6 rounded-3xl">
-          <h3 className="font-bold text-lg flex items-center gap-2 mb-4"><ArrowRightLeft /> Son İşlemler</h3>
-          <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="flex justify-between items-center p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-full ${i===1 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
-                    <ArrowRightLeft size={16} />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm">{i===1 ? 'Hizmet Ödemesi' : 'Bakiye Yükleme'}</p>
-                    <p className="text-xs text-slate-500">12 Ekim 2023</p>
-                  </div>
-                </div>
-                <span className={`font-bold ${i===1 ? 'text-red-600' : 'text-green-600'}`}>{i===1 ? '-₺4.500' : '+₺10.000'}</span>
-              </div>
-            ))}
+        {/* Kurumsal */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
+          className="glass p-8 rounded-3xl flex flex-col"
+        >
+          <h3 className="text-xl font-bold mb-2">Kurumsal</h3>
+          <p className="text-sm text-slate-500 mb-6">Büyük firmalar ve ekipler için</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₺999</span><span className="text-slate-500">/ay</span>
           </div>
-        </div>
-
-        <div className="glass p-6 rounded-3xl">
-          <h3 className="font-bold text-lg flex items-center gap-2 mb-4"><FileText /> Dijital Faturalar</h3>
-          <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-center p-4">
-            <CreditCard size={40} className="text-slate-300 mb-3" />
-            <p className="text-sm font-medium mb-1">E-Fatura Entegrasyonu Aktif</p>
-            <p className="text-xs text-slate-500 mb-4">Tüm ödemeleriniz otomatik olarak faturalandırılır.</p>
-            <button className="glass-button text-xs py-2 px-4">Faturaları İndir</button>
-          </div>
-        </div>
+          <ul className="space-y-4 mb-8 flex-1">
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> Plus'taki her şey</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> 10 Alt çalışan hesabı (Departmanlar)</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> Toplu faturalandırma ve API desteği</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> Özel müşteri temsilcisi</li>
+          </ul>
+          <button className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">İletişime Geç</button>
+        </motion.div>
       </div>
     </div>
   );

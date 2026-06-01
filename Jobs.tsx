@@ -1,154 +1,98 @@
-import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import supabase from '../lib/supabase';
-import { Send, User as UserIcon, ArrowLeft, MessageCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Play, PlayCircle, Clock, Eye, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export default function Messages() {
-  const { user } = useAuth();
-  const [messages, setMessages] = useState<any[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [contacts, setContacts] = useState<any[]>([]);
-  const [activeContact, setActiveContact] = useState<any>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+export default function UstabasiTV() {
+  const categories = ['Tümü', 'Eğitimler', 'Başarı Hikayeleri', 'Firma Röportajları', 'Sektör Haberleri'];
+  const [activeCat, setActiveCat] = useState('Tümü');
 
-  // Fetch users as mock contacts for MVP (ideally fetch from existing conversations)
-  useEffect(() => {
-    fetch('/api/users')
-      .then(res => res.json())
-      .then(data => {
-        // Exclude self
-        setContacts(data.filter((u: any) => u.id !== user.id));
-      });
-  }, [user.id]);
-
-  useEffect(() => {
-    if (!activeContact) return;
-
-    // Fetch message history
-    fetch(`/api/messages?user1=${user.id}&user2=${activeContact.id}`)
-      .then(res => res.json())
-      .then(data => setMessages(data));
-
-    // Subscribe to realtime messages
-    const channel = supabase
-      .channel('messages_channel')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'messages',
-      }, (payload) => {
-        const msg = payload.new;
-        if (
-          (msg.sender_id === user.id && msg.receiver_id === activeContact.id) ||
-          (msg.sender_id === activeContact.id && msg.receiver_id === user.id)
-        ) {
-          setMessages(prev => [...prev, msg]);
-        }
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [activeContact, user.id]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const sendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !activeContact) return;
-
-    const msgContent = newMessage;
-    setNewMessage('');
-
-    await fetch('/api/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sender_id: user.id,
-        receiver_id: activeContact.id,
-        content: msgContent
-      })
-    });
-  };
+  const videos = [
+    { id: 1, title: 'Akıllı Ev Sistemleri Kurulum Rehberi (Bölüm 1)', author: 'Ustabaşı Akademi', views: '12B', time: '2 gün önce', duration: '14:20', image: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=600&q=80' },
+    { id: 2, title: 'Mega İnşaat CEO\'su ile Sektörün Geleceği', author: 'Firma Röportajları', views: '8.5B', time: '1 hafta önce', duration: '45:00', image: 'https://images.unsplash.com/photo-1504307651254-35680f356f58?w=600&q=80' },
+    { id: 3, title: 'Sıfırdan Zirveye: Ahmet Usta\'nın Hikayesi', author: 'Başarı Hikayeleri', views: '24B', time: '3 hafta önce', duration: '12:35', image: 'https://images.unsplash.com/photo-1622372738946-62e02505feb3?w=600&q=80' },
+    { id: 4, title: 'Yeni Nesil Isı Pompaları Nasıl Çalışır?', author: 'Eğitimler', views: '5.2B', time: '1 ay önce', duration: '18:10', image: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=600&q=80' },
+  ];
 
   return (
-    <div className="h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] glass rounded-3xl overflow-hidden flex shadow-xl">
-      {/* Contacts List */}
-      <div className={`w-full md:w-80 border-r border-slate-200 dark:border-slate-700/50 flex flex-col ${activeContact ? 'hidden md:flex' : 'flex'}`}>
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700/50">
-          <h2 className="font-bold text-lg">Mesajlar</h2>
-        </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {contacts.map(contact => (
-            <button 
-              key={contact.id} 
-              onClick={() => setActiveContact(contact)}
-              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${activeContact?.id === contact.id ? 'bg-blue-50 dark:bg-blue-900/30' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
-            >
-              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center overflow-hidden shrink-0">
-                {contact.avatar_url ? <img src={contact.avatar_url} className="w-full h-full object-cover" /> : <UserIcon size={20} className="text-slate-400" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-sm truncate">{contact.full_name}</h4>
-                <p className="text-xs text-slate-500 truncate capitalize">{contact.role}</p>
-              </div>
-            </button>
-          ))}
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <PlayCircle className="text-red-500" size={32} /> USTABAŞI TV
+          </h1>
+          <p className="text-slate-500 mt-2">Sektörün nabzını tutan videolar, eğitimler ve hikayeler.</p>
         </div>
       </div>
 
-      {/* Chat Area */}
-      <div className={`flex-1 flex flex-col bg-white/30 dark:bg-slate-900/30 ${!activeContact ? 'hidden md:flex' : 'flex'}`}>
-        {activeContact ? (
-          <>
-            <div className="p-4 border-b border-slate-200 dark:border-slate-700/50 flex items-center gap-3 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md z-10">
-              <button className="md:hidden p-2 -ml-2" onClick={() => setActiveContact(null)}>
-                <ArrowLeft size={20} />
-              </button>
-              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center overflow-hidden shrink-0">
-                {activeContact.avatar_url ? <img src={activeContact.avatar_url} className="w-full h-full object-cover" /> : <UserIcon size={20} className="text-slate-400" />}
-              </div>
-              <h3 className="font-bold">{activeContact.full_name}</h3>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg, i) => {
-                const isMe = msg.sender_id === user.id;
-                return (
-                  <div key={i} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${isMe ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white dark:bg-slate-800 shadow-sm rounded-bl-sm'}`}>
-                      {msg.content}
-                    </div>
-                  </div>
-                );
-              })}
-              <div ref={messagesEndRef} />
-            </div>
+      {/* Categories */}
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        {categories.map((cat, i) => (
+          <button 
+            key={i} 
+            onClick={() => setActiveCat(cat)}
+            className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeCat === cat ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md' : 'glass-panel hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
 
-            <div className="p-4 border-t border-slate-200 dark:border-slate-700/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md">
-              <form onSubmit={sendMessage} className="flex gap-2">
-                <input 
-                  type="text" 
-                  value={newMessage}
-                  onChange={e => setNewMessage(e.target.value)}
-                  placeholder="Bir mesaj yazın..." 
-                  className="flex-1 glass-input py-2.5"
-                />
-                <button type="submit" disabled={!newMessage.trim()} className="glass-button px-4 py-2.5 flex items-center justify-center disabled:opacity-50">
-                  <Send size={18} />
-                </button>
-              </form>
+      {/* Featured Video */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+        className="glass rounded-3xl overflow-hidden relative group cursor-pointer"
+      >
+        <div className="aspect-video md:aspect-[21/9] w-full relative">
+          <img src={videos[0].image} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+          
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-red-600/90 backdrop-blur-md flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shadow-[0_0_30px_rgba(220,38,38,0.5)]">
+              <Play fill="currentColor" size={36} className="ml-2" />
             </div>
-          </>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-500">
-            <MessageCircle size={48} className="mb-4 opacity-20" />
-            <p>Mesajlaşmaya başlamak için bir kişi seçin</p>
           </div>
-        )}
+
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
+            <div className="flex items-center gap-2 text-red-400 font-bold text-sm mb-3 uppercase tracking-wider">
+              <TrendingUp size={16} /> Haftanın Öne Çıkanı
+            </div>
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 max-w-3xl">{videos[0].title}</h2>
+            <div className="flex items-center gap-4 text-sm text-slate-300">
+              <span className="font-medium text-white">{videos[0].author}</span>
+              <span className="flex items-center gap-1"><Eye size={14} /> {videos[0].views}</span>
+              <span className="flex items-center gap-1"><Clock size={14} /> {videos[0].time}</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Video Grid */}
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {videos.slice(1).map((video, i) => (
+          <motion.div 
+            key={video.id}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+            className="group cursor-pointer"
+          >
+            <div className="relative aspect-video rounded-2xl overflow-hidden mb-3 bg-slate-100 dark:bg-slate-800">
+              <img src={video.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-sm">
+                {video.duration}
+              </div>
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <Play fill="currentColor" size={32} className="text-white" />
+              </div>
+            </div>
+            <h3 className="font-bold text-base mb-1 group-hover:text-blue-600 transition-colors line-clamp-2">{video.title}</h3>
+            <p className="text-sm text-slate-500 mb-1">{video.author}</p>
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <span>{video.views} görüntülenme</span>
+              <span>•</span>
+              <span>{video.time}</span>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
 }
-

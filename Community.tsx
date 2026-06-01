@@ -1,78 +1,81 @@
 import { useState } from 'react';
-import { Users, TrendingUp, Briefcase, DollarSign, PieChart, Building } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function CompanyDashboard() {
+export default function CreateJob() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: 'İnşaat',
+    location: '',
+    budget: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, user_id: user.id })
+      });
+      if (res.ok) {
+        navigate('/jobs');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="max-w-2xl mx-auto space-y-6">
+      <h1 className="text-3xl font-bold">Yeni İş İlanı Oluştur</h1>
+      
+      <form onSubmit={handleSubmit} className="glass p-6 md:p-8 rounded-3xl space-y-5">
         <div>
-          <h1 className="text-3xl font-bold">Firma Merkezi</h1>
-          <p className="text-slate-500">Mega İnşaat A.Ş. Yönetim Paneli</p>
+          <label className="block text-sm font-medium mb-1 ml-1">İş Başlığı</label>
+          <input type="text" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="Örn: Evin tüm elektrik tesisatı yenilenecek" className="glass-input" />
         </div>
-        <button className="glass-button text-sm py-2">Yeni İlan Çık</button>
-      </div>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1 ml-1">Kategori</label>
+          <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="glass-input">
+            <option>İnşaat</option>
+            <option>Elektrik</option>
+            <option>Tesisat</option>
+            <option>Otomotiv</option>
+            <option>Mobilya</option>
+            <option>Boya & Badana</option>
+          </select>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg"><Briefcase size={20} /></div>
-            <span className="text-xs font-bold text-green-500 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">+12%</span>
-          </div>
-          <h3 className="text-2xl font-bold">14</h3>
-          <p className="text-sm text-slate-500">Aktif Proje</p>
+        <div>
+          <label className="block text-sm font-medium mb-1 ml-1">Detaylı Açıklama</label>
+          <textarea required rows={4} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="İşin detaylarını, beklentilerinizi yazın..." className="glass-input resize-none"></textarea>
         </div>
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg"><Users size={20} /></div>
-          </div>
-          <h3 className="text-2xl font-bold">45</h3>
-          <p className="text-sm text-slate-500">Çalışan Usta</p>
-        </div>
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg"><DollarSign size={20} /></div>
-          </div>
-          <h3 className="text-2xl font-bold">₺1.2M</h3>
-          <p className="text-sm text-slate-500">Aylık Harcama</p>
-        </div>
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-lg"><TrendingUp size={20} /></div>
-          </div>
-          <h3 className="text-2xl font-bold">4.8</h3>
-          <p className="text-sm text-slate-500">Firma Puanı</p>
-        </div>
-      </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 glass p-6 rounded-3xl">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg flex items-center gap-2"><Building size={20} /> Departmanlar</h3>
-            <button className="text-sm text-blue-600 font-medium">Tümünü Gör</button>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 ml-1">Konum</label>
+            <input type="text" required value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="İl, İlçe" className="glass-input" />
           </div>
-          <div className="space-y-4">
-            {['Elektrik', 'Sıhhi Tesisat', 'İnce İşler', 'Kaba İnşaat'].map((dep, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <div>
-                  <h4 className="font-bold">{dep} Departmanı</h4>
-                  <p className="text-xs text-slate-500 mt-1">{10 - i} Aktif Usta • {3 - (i%2)} Devam Eden Proje</p>
-                </div>
-                <button className="text-sm px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg font-medium">Yönet</button>
-              </div>
-            ))}
+          <div>
+            <label className="block text-sm font-medium mb-1 ml-1">Tahmini Bütçe (TL)</label>
+            <input type="text" required value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} placeholder="Örn: 5000 - 8000" className="glass-input" />
           </div>
         </div>
 
-        <div className="glass p-6 rounded-3xl flex flex-col">
-          <h3 className="font-bold text-lg flex items-center gap-2 mb-6"><PieChart size={20} /> Raporlar</h3>
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
-            <PieChart size={48} className="text-slate-300 mb-4" />
-            <h4 className="font-medium mb-1">Detaylı Analiz</h4>
-            <p className="text-xs text-slate-500 mb-4">Maliyet ve performans raporlarınızı buradan indirebilirsiniz.</p>
-            <button className="glass-button text-xs py-2 px-4">Rapor Oluştur</button>
-          </div>
-        </div>
-      </div>
+        <button type="submit" disabled={loading} className="glass-button w-full mt-4">
+          {loading ? 'Oluşturuluyor...' : 'İlanı Yayınla'}
+        </button>
+      </form>
     </div>
   );
 }

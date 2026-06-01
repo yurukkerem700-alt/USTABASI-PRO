@@ -1,71 +1,87 @@
-import { Globe, MapPin, DollarSign, Filter, ChevronDown } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Trophy, Medal, Star, TrendingUp } from 'lucide-react';
 
-export default function GlobalMarket() {
-  const globalJobs = [
-    { id: 1, title: 'Senior Electrician Needed for Hotel Project', company: 'Dubai Builders LLC', location: 'Dubai, BAE', price: '$4,500 / month', type: 'Tam Zamanlı', flag: '🇦🇪' },
-    { id: 2, title: 'İnşaat Mühendisi ve Şantiye Şefi', company: 'EuroConstruct', location: 'Berlin, Almanya', price: '€5,200 / month', type: 'Sözleşmeli', flag: '🇩🇪' },
-    { id: 3, title: 'Experienced Plumber for Residential Complex', company: 'UK Homes', location: 'Londra, İngiltere', price: '£3,800 / month', type: 'Tam Zamanlı', flag: '🇬🇧' },
+export default function Leaderboard() {
+  const leaders = [
+    { rank: 1, name: 'Ahmet Yılmaz', role: 'Elektrik Ustası', points: 15420, rating: 4.9, avatar: 'https://ui-avatars.com/api/?name=Ahmet+Yilmaz&background=random' },
+    { rank: 2, name: 'Mehmet Demir', role: 'Sıhhi Tesisat', points: 14200, rating: 4.8, avatar: 'https://ui-avatars.com/api/?name=Mehmet+Demir&background=random' },
+    { rank: 3, name: 'Can İnşaat', role: 'Firma', points: 12850, rating: 4.9, avatar: 'https://ui-avatars.com/api/?name=Can+Insaat&background=random' },
+    { rank: 4, name: 'Ayşe Kaya', role: 'İç Mimar', points: 11500, rating: 5.0, avatar: 'https://ui-avatars.com/api/?name=Ayse+Kaya&background=random' },
+    { rank: 5, name: 'Veli Usta', role: 'Boya & Badana', points: 9800, rating: 4.7, avatar: 'https://ui-avatars.com/api/?name=Veli+Usta&background=random' },
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="glass p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
-        <div className="absolute right-0 top-0 opacity-10">
-          <Globe size={200} />
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div className="text-center space-y-2 mb-10">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 text-white shadow-lg mb-2">
+          <Trophy size={32} />
         </div>
-        <div className="relative z-10 max-w-2xl">
-          <h1 className="text-4xl font-bold mb-4">Uluslararası İş Pazarı</h1>
-          <p className="text-slate-300 text-lg mb-6">Yeteneklerinizi sınırların ötesine taşıyın. Yurtdışındaki projelere başvurun, farklı para birimleriyle kazanç sağlayın.</p>
-          <div className="flex gap-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-colors">İş İlanlarını İncele</button>
-            <button className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-colors backdrop-blur-sm border border-white/20">Vize ve Denklik Desteği</button>
+        <h1 className="text-3xl font-bold">Liderlik Tablosu</h1>
+        <p className="text-slate-500">Platformun en iyi ustaları ve firmaları</p>
+      </div>
+
+      {/* Top 3 Podium */}
+      <div className="flex justify-center items-end gap-2 md:gap-6 mb-12 h-64">
+        {/* 2nd Place */}
+        <div className="flex flex-col items-center w-28 md:w-32">
+          <img src={leaders[1].avatar} className="w-16 h-16 rounded-full border-4 border-slate-300 mb-2 z-10" />
+          <div className="w-full h-32 bg-gradient-to-t from-slate-300 to-slate-100 dark:from-slate-700 dark:to-slate-600 rounded-t-xl flex flex-col items-center pt-4 relative shadow-lg">
+            <span className="text-2xl font-bold text-slate-500">2</span>
+            <span className="text-xs font-bold mt-auto pb-4">{leaders[1].points} P</span>
+          </div>
+        </div>
+        
+        {/* 1st Place */}
+        <div className="flex flex-col items-center w-32 md:w-40">
+          <div className="relative">
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-yellow-500">
+              <Medal size={32} fill="currentColor" />
+            </div>
+            <img src={leaders[0].avatar} className="w-20 h-20 rounded-full border-4 border-yellow-400 mb-2 z-10 relative" />
+          </div>
+          <div className="w-full h-40 bg-gradient-to-t from-yellow-400 to-yellow-200 dark:from-yellow-600 dark:to-yellow-500 rounded-t-xl flex flex-col items-center pt-4 relative shadow-xl">
+            <span className="text-3xl font-bold text-yellow-700 dark:text-yellow-100">1</span>
+            <span className="text-sm font-bold mt-auto pb-4 text-yellow-900 dark:text-yellow-50">{leaders[0].points} P</span>
+          </div>
+        </div>
+
+        {/* 3rd Place */}
+        <div className="flex flex-col items-center w-28 md:w-32">
+          <img src={leaders[2].avatar} className="w-16 h-16 rounded-full border-4 border-amber-600 mb-2 z-10" />
+          <div className="w-full h-24 bg-gradient-to-t from-amber-700 to-amber-500 rounded-t-xl flex flex-col items-center pt-4 relative shadow-lg text-white">
+            <span className="text-2xl font-bold">3</span>
+            <span className="text-xs font-bold mt-auto pb-4">{leaders[2].points} P</span>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="glass-panel p-2 flex items-center gap-2 rounded-xl flex-1">
-          <div className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm font-bold text-sm flex items-center gap-2 cursor-pointer">
-            <Globe size={16} className="text-blue-500" /> Tüm Ülkeler <ChevronDown size={14} />
-          </div>
-          <div className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer transition-colors">Almanya</div>
-          <div className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer transition-colors">BAE</div>
-          <div className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer transition-colors">İngiltere</div>
+      {/* List */}
+      <div className="glass rounded-3xl overflow-hidden">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700/50 bg-white/40 dark:bg-slate-900/40 flex justify-between text-xs font-bold text-slate-500 uppercase tracking-wider">
+          <span className="w-12 text-center">Sıra</span>
+          <span className="flex-1">Kullanıcı</span>
+          <span className="w-24 text-center hidden md:block">Puan</span>
+          <span className="w-24 text-center">Değerlendirme</span>
         </div>
-        <button className="glass-button flex items-center gap-2 text-sm px-6 py-2">
-          <Filter size={16} /> Detaylı Filtre
-        </button>
-      </div>
-
-      <div className="grid gap-4">
-        {globalJobs.map((job, i) => (
-          <motion.div 
-            key={job.id}
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-            className="glass p-6 rounded-2xl flex flex-col md:flex-row gap-6 md:items-center hover:shadow-xl transition-all group border border-slate-200 dark:border-slate-800"
-          >
-            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-3xl shrink-0 shadow-inner">
-              {job.flag}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2 py-0.5 rounded uppercase tracking-wider">{job.type}</span>
+        <div className="divide-y divide-slate-200 dark:divide-slate-700/50">
+          {leaders.map((leader, i) => (
+            <div key={i} className="p-4 flex items-center hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors">
+              <span className="w-12 text-center font-bold text-lg text-slate-400">{leader.rank}</span>
+              <div className="flex-1 flex items-center gap-3">
+                <img src={leader.avatar} className="w-10 h-10 rounded-full" />
+                <div>
+                  <h4 className="font-bold text-sm">{leader.name}</h4>
+                  <p className="text-xs text-slate-500">{leader.role}</p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">{job.title}</h3>
-              <p className="text-slate-500 font-medium">{job.company}</p>
-              <div className="flex flex-wrap gap-4 mt-3 text-sm text-slate-600 dark:text-slate-400">
-                <span className="flex items-center gap-1"><MapPin size={16} className="text-slate-400" /> {job.location}</span>
-                <span className="flex items-center gap-1 font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-lg"><DollarSign size={16} /> {job.price}</span>
+              <div className="w-24 text-center hidden md:flex items-center justify-center gap-1 font-bold text-sm text-blue-600">
+                <TrendingUp size={14} /> {leader.points}
+              </div>
+              <div className="w-24 flex items-center justify-center gap-1 font-bold text-sm">
+                <Star size={14} className="text-amber-500" fill="currentColor" /> {leader.rating}
               </div>
             </div>
-            <div>
-              <button className="w-full md:w-auto bg-slate-900 hover:bg-black text-white dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 px-6 py-3 rounded-xl font-bold transition-colors">
-                Apply Now
-              </button>
-            </div>
-          </motion.div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

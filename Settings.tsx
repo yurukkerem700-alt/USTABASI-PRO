@@ -1,72 +1,145 @@
-import { ShoppingBag, Search, Filter, Star, ShoppingCart } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { User, Mail, MapPin, Star, Settings, Image as ImageIcon, Plus, Trophy, ShieldCheck, Award } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function Marketplace() {
-  const products = [
-    { id: 1, title: 'Bosch Profesyonel Kırıcı Delici (İkinci El)', price: '₺4.500', category: 'Ekipman', rating: 4.8, image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&q=80', seller: 'Ahmet Usta' },
-    { id: 2, title: 'Toptan Filli Boya İç Cephe (15L x 10 Kova)', price: '₺12.000', category: 'Malzeme', rating: 5.0, image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80', seller: 'Yapı Market A.Ş.' },
-    { id: 3, title: 'Makita Akülü Vidalama Seti (Sıfır Ayarında)', price: '₺3.200', category: 'Ekipman', rating: 4.5, image: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=400&q=80', seller: 'Mehmet Elektrik' },
-    { id: 4, title: '2. El İskele Sistemi (100 m2)', price: '₺18.500', category: 'Büyük Ekipman', rating: 4.2, image: 'https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?w=400&q=80', seller: 'Can İnşaat' },
-  ];
+export default function Profile() {
+  const { user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState('portfolio');
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: profile?.full_name || '',
+    bio: profile?.bio || '',
+    location: profile?.location || '',
+    phone: profile?.phone || '',
+  });
+
+  const handleSave = async () => {
+    await fetch('/api/users', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: user.id, ...formData })
+    });
+    setIsEditing(false);
+    window.location.reload(); // Refresh to get updated profile context
+  };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <ShoppingBag className="text-orange-500" size={32} /> USTABAŞI Marketplace
-          </h1>
-          <p className="text-slate-500 mt-2">Malzeme, ekipman ve ikinci el alet alım satım platformu.</p>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="glass p-6 md:p-8 rounded-3xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+        
+        <div className="relative mt-12 flex flex-col md:flex-row items-center md:items-end gap-6">
+          <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-800 bg-slate-200 overflow-hidden shrink-0 relative group">
+            <img src={profile?.avatar_url || `https://ui-avatars.com/api/?name=${profile?.full_name}&size=128&background=random`} alt="Profile" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition-all">
+              <span className="text-white text-xs font-medium">Değiştir</span>
+            </div>
+          </div>
+          <div className="flex-1 text-center md:text-left mb-2">
+            {isEditing ? (
+              <input type="text" value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="glass-input text-xl font-bold mb-2 p-2" />
+            ) : (
+              <h1 className="text-2xl font-bold">{profile?.full_name}</h1>
+            )}
+            <p className="text-slate-500 dark:text-slate-400 font-medium capitalize">{profile?.role}</p>
+            <div className="flex items-center justify-center md:justify-start gap-4 mt-2 text-sm text-slate-600 dark:text-slate-300">
+              <span className="flex items-center gap-1"><MapPin size={16} /> {profile?.location || 'Konum belirtilmemiş'}</span>
+              <span className="flex items-center gap-1 text-amber-500"><Star size={16} fill="currentColor" /> {profile?.rating || '0.0'}</span>
+            </div>
+          </div>
+          {isEditing ? (
+            <div className="flex gap-2 mb-2">
+              <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-sm font-medium">İptal</button>
+              <button onClick={handleSave} className="glass-button py-2 px-4 text-sm">Kaydet</button>
+            </div>
+          ) : (
+            <button onClick={() => setIsEditing(true)} className="glass-button flex items-center gap-2 text-sm py-2 px-4 mb-2">
+              <Settings size={16} /> Profili Düzenle
+            </button>
+          )}
         </div>
-        <button className="glass-button flex items-center gap-2 px-6">
-          <ShoppingCart size={18} /> İlan Ver
-        </button>
       </div>
 
-      <div className="glass rounded-2xl p-3 flex gap-2">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input type="text" placeholder="Matkap, boya, iskele vb. arayın..." className="glass-input pl-10 py-2.5" />
-        </div>
-        <button className="glass-panel px-4 py-2 flex items-center gap-2 text-sm font-medium hover:bg-slate-100 transition-colors">
-          <Filter size={18} /> Filtrele
-        </button>
-      </div>
+      <div className="grid md:grid-cols-3 gap-6">
+        <div className="md:col-span-1 space-y-6">
+          <div className="glass-panel p-6 rounded-2xl">
+            <h3 className="font-bold mb-4">Hakkında</h3>
+            {isEditing ? (
+              <textarea value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="glass-input text-sm mb-4 resize-none" rows={4} placeholder="Kendinizden bahsedin..."></textarea>
+            ) : (
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 whitespace-pre-wrap">
+                {profile?.bio || 'Henüz bir açıklama eklenmemiş.'}
+              </p>
+            )}
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2 text-slate-500"><Mail size={16} /> {profile?.email}</div>
+              {isEditing ? (
+                <div className="flex items-center gap-2">
+                  <User size={16} className="text-slate-500" />
+                  <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="Telefon" className="glass-input p-1.5 text-xs" />
+                </div>
+              ) : (
+                profile?.phone && <div className="flex items-center gap-2 text-slate-500"><User size={16} /> {profile.phone}</div>
+              )}
+            </div>
+          </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-        {['Tümü', 'İkinci El Ekipman', 'Sıfır Malzeme', 'Toptan Alım', 'Araç & İş Makinesi'].map((cat, i) => (
-          <button key={i} className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${i === 0 ? 'bg-orange-500 text-white shadow-md' : 'glass-panel hover:bg-slate-200 dark:hover:bg-slate-700'}`}>
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product, i) => (
-          <motion.div 
-            key={product.id}
-            initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-            className="glass rounded-2xl overflow-hidden hover:shadow-xl transition-all group flex flex-col"
-          >
-            <div className="aspect-square relative overflow-hidden bg-slate-100">
-              <img src={product.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-2 right-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm">
-                <Star size={12} className="text-amber-500" fill="currentColor" /> {product.rating}
+          {/* Advanced Badge System */}
+          <div className="glass-panel p-6 rounded-2xl">
+            <h3 className="font-bold mb-4">Başarılar & Rozetler</h3>
+            <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col items-center gap-1 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800/50" title="100 İş Tamamladı">
+                <Trophy size={24} className="text-yellow-500" />
+                <span className="text-[10px] font-bold text-yellow-700 dark:text-yellow-400">100+ İş</span>
+              </div>
+              <div className="flex flex-col items-center gap-1 p-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800/50" title="30 Gün Aktif">
+                <Star size={24} className="text-orange-500" fill="currentColor" />
+                <span className="text-[10px] font-bold text-orange-700 dark:text-orange-400">30 Gün</span>
+              </div>
+              <div className="flex flex-col items-center gap-1 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800/50" title="Akademi Mezunu">
+                <Award size={24} className="text-blue-500" />
+                <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400">Akademi</span>
+              </div>
+              <div className="flex flex-col items-center gap-1 p-2 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800/50" title="Premium Üye">
+                <ShieldCheck size={24} className="text-purple-500" />
+                <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400">Premium</span>
               </div>
             </div>
-            <div className="p-4 flex flex-col flex-1">
-              <span className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-1">{product.category}</span>
-              <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">{product.title}</h3>
-              <p className="text-xs text-slate-500 mb-4">Satıcı: {product.seller}</p>
-              <div className="mt-auto flex items-center justify-between">
-                <span className="font-bold text-lg">{product.price}</span>
-                <button className="text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-lg transition-colors">
-                  İncele
+          </div>
+        </div>
+        
+        <div className="md:col-span-2 space-y-6">
+          <div className="flex gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+            <button onClick={() => setActiveTab('portfolio')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'portfolio' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>Portfolyo</button>
+            <button onClick={() => setActiveTab('reviews')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'reviews' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>Yorumlar</button>
+          </div>
+
+          {activeTab === 'portfolio' && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="font-bold">Çalışmalarım</h3>
+                <button className="flex items-center gap-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 px-3 py-1.5 rounded-lg transition-colors">
+                  <Plus size={16} /> Yeni Ekle
                 </button>
               </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {/* Placeholder portfolio items */}
+                <div className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-xl flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-700">
+                  <ImageIcon size={32} className="mb-2 opacity-50" />
+                  <span className="text-xs font-medium">Görsel Yok</span>
+                </div>
+              </div>
             </div>
-          </motion.div>
-        ))}
+          )}
+
+          {activeTab === 'reviews' && (
+            <div className="space-y-4">
+              <div className="text-center py-10 glass-panel">
+                <p className="text-slate-500">Henüz yorum yapılmamış.</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

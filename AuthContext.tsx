@@ -1,181 +1,104 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Briefcase, IndianRupee, Filter, Search, ChevronDown, X } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Bot, X, Send, Sparkles } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
-export default function Jobs() {
-  const [jobs, setJobs] = useState<any[]>([]);
-  const [filteredJobs, setFilteredJobs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
-  const { user, profile } = useAuth();
-  const { t } = useLanguage();
+export default function MiniAIAssistant() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { type: 'ai', content: 'Selam! Ben Hasan Usta (AI). Platformda gezinirken sormak istediğin bir şey olursa buradayım.' }
+  ]);
+  const [input, setInput] = useState('');
+  const location = useLocation();
 
-  // Filter states
-  const [categoryFilter, setCategoryFilter] = useState('Tümü');
-  const [locationFilter, setLocationFilter] = useState('');
-  
-  const categories = ['Tümü', 'Elektrik', 'Tesisat', 'Kaba İnşaat', 'Boya & Badana', 'Mobilya', 'İklimlendirme'];
-
+  // Show a contextual hint when route changes
   useEffect(() => {
-    fetch('/api/projects')
-      .then(res => res.json())
-      .then(data => {
-        const jobsArray = Array.isArray(data) ? data : [];
-        setJobs(jobsArray);
-        setFilteredJobs(jobsArray);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    if (location.pathname === '/jobs' && messages.length < 3) {
+      setMessages(prev => [...prev, { type: 'ai', content: 'İlanlara bakıyorsun sanırım. İstersen aradığın işi bana yaz, senin için en uygun olanları filtreleyeyim.' }]);
+    }
+  }, [location.pathname]);
 
-  useEffect(() => {
-    let result = jobs;
-    if (categoryFilter !== 'Tümü') {
-      result = result.filter(j => j.category === categoryFilter);
-    }
-    if (locationFilter.trim()) {
-      result = result.filter(j => j.location.toLowerCase().includes(locationFilter.toLowerCase()));
-    }
-    setFilteredJobs(result);
-  }, [categoryFilter, locationFilter, jobs]);
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setMessages([...messages, { type: 'user', content: input }]);
+    setInput('');
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        type: 'ai', 
+        content: 'Anladım. Bu konuda sana detaylı bilgi vermek isterdim ama şu an demo modundayım. Sol menüden ana "Yapay Zeka Asistanı" sayfasına giderek tam sürüme erişebilirsin.' 
+      }]);
+    }, 1000);
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-bold">{t('İş İlanları')}</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2">{t('Sana en uygun fırsatları keşfet')}</p>
-        </div>
-        <div className="flex gap-2">
-          <button onClick={() => setShowFilters(!showFilters)} className="glass-panel text-sm py-2 px-4 flex items-center gap-2 md:hidden">
-            <Filter size={16} /> {t('Filtrele')}
-          </button>
-          {profile?.role !== 'usta' && (
-            <Link to="/create-job" className="glass-button text-sm py-2">{t('İlan Ver')}</Link>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar Filters */}
-        <AnimatePresence>
-          {(showFilters || window.innerWidth >= 768) && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="w-full md:w-64 shrink-0 glass p-5 rounded-2xl h-fit space-y-6 md:block overflow-hidden"
-            >
-              <div className="flex justify-between items-center md:hidden mb-4">
-                <h3 className="font-bold">{t('Filtreler')}</h3>
-                <button onClick={() => setShowFilters(false)} className="p-1"><X size={18}/></button>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2">{t('Kategori')}</label>
-                <div className="space-y-1">
-                  {categories.map(cat => (
-                    <button 
-                      key={cat}
-                      onClick={() => setCategoryFilter(cat)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${categoryFilter === cat ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
-                    >
-                      {t(cat)}
-                    </button>
-                  ))}
+    <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 flex flex-col items-end">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="w-[320px] h-[400px] mb-4 glass rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-purple-200 dark:border-purple-800/50"
+          >
+            {/* Header */}
+            <div className="p-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <Bot size={18} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm">Hasan Usta (AI)</h3>
+                  <span className="text-[10px] flex items-center gap-1 opacity-80"><Sparkles size={10} /> Ustabaşı Asistanı</span>
                 </div>
               </div>
+              <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/20 rounded-lg transition-colors">
+                <X size={18} />
+              </button>
+            </div>
 
-              <div>
-                <label className="block text-sm font-bold mb-2">{t('Şehir / İlçe')}</label>
-                <div className="relative">
-                  <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input 
-                    type="text" 
-                    value={locationFilter}
-                    onChange={e => setLocationFilter(e.target.value)}
-                    placeholder={t("Konum ara...")}
-                    className="glass-input pl-9 py-2 text-sm w-full"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2">{t('Bütçe Aralığı')}</label>
-                <input type="range" className="w-full accent-blue-600" />
-                <div className="flex justify-between text-xs text-slate-500 mt-1">
-                  <span>₺0</span>
-                  <span>₺100.000+</span>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Jobs List */}
-        <div className="flex-1">
-          {loading ? (
-            <div className="grid gap-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="glass p-6 rounded-2xl animate-pulse flex gap-4">
-                  <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-xl"></div>
-                  <div className="flex-1 space-y-3">
-                    <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
+            {/* Chat Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-white/50 dark:bg-slate-900/50">
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
+                    msg.type === 'user' 
+                      ? 'bg-blue-600 text-white rounded-br-sm' 
+                      : 'bg-white dark:bg-slate-800 shadow-sm rounded-bl-sm border border-slate-100 dark:border-slate-700'
+                  }`}>
+                    {msg.content}
                   </div>
                 </div>
               ))}
             </div>
-          ) : filteredJobs.length === 0 ? (
-            <div className="text-center py-20 glass-panel rounded-2xl">
-              <Briefcase className="mx-auto h-12 w-12 text-slate-400 mb-4" />
-              <h3 className="text-lg font-medium">{t('Kriterlere uygun ilan bulunamadı')}</h3>
+
+            {/* Input */}
+            <div className="p-3 bg-white/80 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-700/50">
+              <form onSubmit={handleSend} className="flex gap-2 relative">
+                <input 
+                  type="text" 
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Hasan Usta'ya sor..." 
+                  className="flex-1 glass-input py-2 pr-10 text-sm"
+                />
+                <button type="submit" className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors">
+                  <Send size={16} />
+                </button>
+              </form>
             </div>
-          ) : (
-            <div className="grid gap-4">
-              {filteredJobs.map((job, i) => (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  key={job.id} 
-                  className="glass p-5 md:p-6 rounded-2xl flex flex-col md:flex-row gap-4 md:items-center hover:border-blue-300 dark:hover:border-blue-700 transition-colors cursor-pointer group"
-                >
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
-                    {job.users?.avatar_url ? (
-                      <img src={job.users.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-blue-600 font-bold text-xl">{job.title.charAt(0)}</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{job.title}</h3>
-                    <p className="text-slate-600 dark:text-slate-300 font-medium text-sm mt-1">{job.description ? job.description.substring(0, 100) : ''}...</p>
-                    <div className="flex flex-wrap gap-3 mt-3 text-sm text-slate-500 dark:text-slate-400">
-                      <span className="flex items-center gap-1"><MapPin size={14} /> {job.location}</span>
-                      <span className="flex items-center gap-1"><Briefcase size={14} /> {job.category}</span>
-                      <span className="flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
-                        <IndianRupee size={14} /> {t('Bütçe')}: {job.budget}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-4 md:mt-0">
-                    <button className="w-full md:w-auto px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white transition-colors font-medium text-sm">
-                      {t('Teklif Ver')}
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 ${isOpen ? 'bg-slate-800 text-white' : 'bg-gradient-to-tr from-purple-600 to-blue-600 text-white animate-bounce-slow'}`}
+      >
+        {isOpen ? <X size={24} /> : <Bot size={28} />}
+      </button>
     </div>
   );
 }

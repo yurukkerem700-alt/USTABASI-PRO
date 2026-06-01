@@ -1,231 +1,105 @@
 import { useState } from 'react';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Video, Plus, Gift, X, Star, Zap, Crown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Award, CheckCircle, Lock, BookOpen } from 'lucide-react';
 
-export default function Ustagram() {
-  const [activeTab, setActiveTab] = useState('reels');
-  const [isLiveViewOpen, setIsLiveViewOpen] = useState(false);
-  const [showGiftPanel, setShowGiftPanel] = useState(false);
+export default function Academy() {
+  const [activeTab, setActiveTab] = useState('courses');
 
-  // Dummy stories
-  const stories = [
-    { id: 1, user: 'Sen', avatar: 'https://ui-avatars.com/api/?name=Sen&background=3b82f6&color=fff', isAdd: true },
-    { id: 2, user: 'Ahmet U.', avatar: 'https://ui-avatars.com/api/?name=Ahmet&background=random', isLive: true },
-    { id: 3, user: 'Mehmet D.', avatar: 'https://ui-avatars.com/api/?name=Mehmet&background=random' },
-    { id: 4, user: 'Ayşe K.', avatar: 'https://ui-avatars.com/api/?name=Ayse&background=random' },
-    { id: 5, user: 'Ali V.', avatar: 'https://ui-avatars.com/api/?name=Ali&background=random' },
+  const courses = [
+    { id: 1, title: 'İleri Seviye Akıllı Ev Sistemleri', category: 'Elektrik', duration: '4 Saat', level: 'İleri', progress: 45, image: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=400&q=80' },
+    { id: 2, title: 'Yeni Nesil Isı Pompası Kurulumu', category: 'Tesisat', duration: '6 Saat', level: 'Orta', progress: 0, image: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&q=80' },
+    { id: 3, title: 'İş Güvenliği ve Şantiye Kuralları', category: 'Genel', duration: '2 Saat', level: 'Başlangıç', progress: 100, image: 'https://images.unsplash.com/photo-1504307651254-35680f356f58?w=400&q=80' },
   ];
 
   return (
-    <div className="max-w-md mx-auto h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] flex flex-col bg-black rounded-3xl overflow-hidden relative shadow-2xl">
-      
-      {/* Top Header & Stories */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent pt-4 pb-6 px-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-white tracking-tight">Ustagram</h1>
-          <div className="flex gap-4 text-white">
-            <Video size={24} />
-            <MessageCircle size={24} />
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Ustabaşı Akademi</h1>
+          <p className="text-slate-500 mt-1">Kendini geliştir, sertifikaları topla ve sıralamada yüksel.</p>
+        </div>
+        <div className="flex items-center gap-2 glass-panel px-4 py-2">
+          <Award className="text-amber-500" />
+          <span className="font-bold">Seviye 4 Usta</span>
+          <div className="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full ml-2 overflow-hidden">
+            <div className="h-full bg-amber-500 w-[60%]"></div>
           </div>
         </div>
+      </div>
 
-        {/* Stories Horizontal Scroll */}
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-          {stories.map(story => (
-            <div key={story.id} onClick={() => story.isLive && setIsLiveViewOpen(true)} className="flex flex-col items-center gap-1 shrink-0 cursor-pointer">
-              <div className={`relative w-16 h-16 rounded-full p-0.5 ${story.isLive ? 'bg-red-500 animate-pulse' : story.isAdd ? '' : 'bg-gradient-to-tr from-yellow-400 to-fuchsia-600'}`}>
-                <div className="w-full h-full bg-black rounded-full p-0.5">
-                  <img src={story.avatar} className="w-full h-full rounded-full object-cover" />
+      <div className="flex gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+        <button onClick={() => setActiveTab('courses')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'courses' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'}`}>Eğitimler</button>
+        <button onClick={() => setActiveTab('certificates')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'certificates' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'}`}>Sertifikalarım</button>
+        <button onClick={() => setActiveTab('exams')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'exams' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'}`}>Sınavlar</button>
+      </div>
+
+      {activeTab === 'courses' && (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map(course => (
+            <div key={course.id} className="glass rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-transform">
+              <div className="relative h-48">
+                <img src={course.image} className="w-full h-full object-cover" alt={course.title} />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                    <Play fill="currentColor" size={24} />
+                  </div>
                 </div>
-                {story.isAdd && (
-                  <div className="absolute bottom-0 right-0 bg-blue-500 rounded-full p-1 border-2 border-black text-white">
-                    <Plus size={12} strokeWidth={4} />
+                <div className="absolute top-3 left-3 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white text-xs font-medium">
+                  {course.category}
+                </div>
+              </div>
+              <div className="p-5">
+                <h3 className="font-bold mb-2 line-clamp-2">{course.title}</h3>
+                <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
+                  <span className="flex items-center gap-1"><BookOpen size={14} /> {course.duration}</span>
+                  <span>•</span>
+                  <span>{course.level}</span>
+                </div>
+                
+                {course.progress > 0 ? (
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-medium">
+                      <span className="text-blue-600">% {course.progress} Tamamlandı</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-600 rounded-full" style={{ width: `${course.progress}%` }}></div>
+                    </div>
                   </div>
-                )}
-                {story.isLive && (
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded border border-black uppercase">
-                    Canlı
-                  </div>
+                ) : (
+                  <button className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 font-medium rounded-xl text-sm transition-colors">
+                    Eğitime Başla
+                  </button>
                 )}
               </div>
-              <span className="text-white text-xs font-medium">{story.user}</span>
             </div>
           ))}
         </div>
-      </div>
+      )}
 
-      {/* Video Feed (Reels Style) */}
-      <div className="flex-1 relative bg-slate-900">
-        <img src="https://images.unsplash.com/photo-1504307651254-35680f356f58?w=800&q=80" className="w-full h-full object-cover opacity-80" />
-        
-        {/* Play overlay for demo */}
-        <div className="absolute inset-0 flex items-center justify-center">
-           <div className="w-16 h-16 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white opacity-50">
-             <Play size={32} fill="currentColor" className="ml-1" />
-           </div>
-        </div>
-
-        {/* Video Info */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 pt-20 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-          <div className="flex items-end justify-between">
-            <div className="flex-1 text-white pr-4">
-              <div className="flex items-center gap-2 mb-2">
-                <img src="https://ui-avatars.com/api/?name=Ahmet+Y&background=random" className="w-10 h-10 rounded-full border border-white/20" />
-                <span className="font-bold">ahmet_usta</span>
-                <button className="px-3 py-1 border border-white/40 rounded-full text-xs font-bold backdrop-blur-sm">Takip Et</button>
-              </div>
-              <p className="text-sm mb-2">Şantiyede yeni gün! İleri seviye akıllı ev panosu kurulumu yapıyoruz. Sorularınızı yoruma bekliyorum. ⚡️🔌 #elektrik #şantiye #akıllıev</p>
-              <div className="flex items-center gap-2 text-xs font-medium bg-white/20 w-max px-3 py-1.5 rounded-full backdrop-blur-md">
-                <Music size={14} /> Orijinal Ses - ahmet_usta
-              </div>
+      {activeTab === 'certificates' && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="glass p-6 rounded-2xl flex items-center gap-4 border-l-4 border-amber-500">
+            <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
+              <Award size={32} />
             </div>
-
-            {/* Right Action Buttons */}
-            <div className="flex flex-col items-center gap-6 text-white pb-4">
-              <button className="flex flex-col items-center gap-1 group">
-                <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                  <Heart size={28} />
-                </div>
-                <span className="text-xs font-medium">12.4K</span>
-              </button>
-              <button className="flex flex-col items-center gap-1 group">
-                <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                  <MessageCircle size={28} />
-                </div>
-                <span className="text-xs font-medium">348</span>
-              </button>
-              <button className="flex flex-col items-center gap-1 group">
-                <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                  <Gift size={28} className="text-yellow-400" />
-                </div>
-                <span className="text-xs font-medium">Hediye</span>
-              </button>
-              <button className="flex flex-col items-center gap-1 group">
-                <div className="p-3 bg-black/20 rounded-full backdrop-blur-sm group-hover:bg-black/40 transition-colors">
-                  <Share2 size={28} />
-                </div>
-                <span className="text-xs font-medium">Paylaş</span>
-              </button>
-              <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden mt-2 animate-[spin_4s_linear_infinite]">
-                <img src="https://ui-avatars.com/api/?name=Ahmet+Y&background=random" className="w-full h-full object-cover" />
+            <div>
+              <h3 className="font-bold">İş Güvenliği Sertifikası</h3>
+              <p className="text-sm text-slate-500">Geçerlilik: 2026'ya kadar</p>
+              <div className="flex items-center gap-1 text-xs text-green-600 mt-1 font-medium">
+                <CheckCircle size={14} /> Doğrulanmış
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Live View Modal (TikTok Style) */}
-      <AnimatePresence>
-        {isLiveViewOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: '100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-50 bg-black flex justify-center"
-          >
-            <div className="w-full max-w-md h-full relative overflow-hidden">
-              {/* Live Video Background */}
-              <img src="https://images.unsplash.com/photo-1504307651254-35680f356f58?w=800&q=80" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none"></div>
-
-              {/* Top Header */}
-              <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-10 pt-safe">
-                <div className="flex items-center gap-2 bg-black/40 rounded-full p-1 pr-4 backdrop-blur-md border border-white/10">
-                  <img src="https://ui-avatars.com/api/?name=Ahmet+U&background=random" className="w-8 h-8 rounded-full" />
-                  <div>
-                    <h3 className="text-white text-xs font-bold">Ahmet Usta</h3>
-                    <p className="text-white/70 text-[10px]">1.2K İzleyici</p>
-                  </div>
-                  <button className="ml-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">Takip Et</button>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="bg-black/40 rounded-full px-3 py-1 backdrop-blur-md flex items-center gap-1 text-yellow-400 text-xs font-bold border border-white/10">
-                    <Star size={12} fill="currentColor" /> 12K
-                  </div>
-                  <button onClick={() => setIsLiveViewOpen(false)} className="text-white p-2 bg-black/40 rounded-full backdrop-blur-md border border-white/10">
-                    <X size={20} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Chat Overlay */}
-              <div className="absolute bottom-20 left-4 right-20 h-48 overflow-y-auto flex flex-col justify-end space-y-2 z-10 mask-image-fade-top">
-                {[
-                  { user: 'Mehmet', text: 'Kolay gelsin usta', color: 'text-blue-400' },
-                  { user: 'Ali', text: 'Hangi marka kablo kullanıyorsun?', color: 'text-green-400' },
-                  { user: 'Ayşe', text: 'Çok temiz işçilik 👏👏', color: 'text-pink-400' },
-                  { user: 'Veli', text: 'Usta fiyatlar ne durumda şu an?', color: 'text-yellow-400' },
-                ].map((chat, i) => (
-                  <div key={i} className="text-sm">
-                    <span className={`font-bold ${chat.color} drop-shadow-md`}>{chat.user}: </span>
-                    <span className="text-white drop-shadow-md">{chat.text}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom Actions */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 z-10">
-                <div className="flex-1 bg-black/40 border border-white/20 rounded-full px-4 py-2.5 backdrop-blur-md text-white text-sm">
-                  Yorum yap...
-                </div>
-                <button 
-                  onClick={() => setShowGiftPanel(!showGiftPanel)}
-                  className="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-500 to-yellow-500 flex items-center justify-center text-white shadow-lg animate-pulse"
-                >
-                  <Gift size={20} />
-                </button>
-                <button className="w-10 h-10 rounded-full bg-black/40 border border-white/20 flex items-center justify-center text-white backdrop-blur-md">
-                  <Share2 size={20} />
-                </button>
-              </div>
-
-              {/* Gift Panel Modal */}
-              <AnimatePresence>
-                {showGiftPanel && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }}
-                    className="absolute bottom-0 left-0 right-0 bg-slate-900 rounded-t-3xl z-20 p-4 pb-8"
-                  >
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-white font-bold">Hediye Gönder</h3>
-                      <div className="flex items-center gap-1 text-yellow-400 font-bold bg-yellow-400/20 px-3 py-1 rounded-full">
-                        <Star size={14} fill="currentColor" /> 500 Bakiye
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2">
-                      {[
-                        { name: 'Gül', icon: '🌹', price: 1 },
-                        { name: 'Çay', icon: '☕', price: 5 },
-                        { name: 'Alkış', icon: '👏', price: 10 },
-                        { name: 'Nazar', icon: '🧿', price: 50 },
-                        { name: 'Taç', icon: <Crown className="mx-auto text-yellow-400"/>, price: 100 },
-                        { name: 'Roket', icon: '🚀', price: 500 },
-                        { name: 'Aslan', icon: '🦁', price: 1000 },
-                        { name: 'USTABAŞI', icon: <Zap className="mx-auto text-blue-400"/>, price: 5000 },
-                      ].map((gift, i) => (
-                        <button key={i} className="bg-slate-800 rounded-xl p-2 flex flex-col items-center justify-center hover:bg-slate-700 transition-colors border border-slate-700">
-                          <div className="text-2xl mb-1">{gift.icon}</div>
-                          <span className="text-[10px] text-slate-300 font-medium">{gift.name}</span>
-                          <span className="text-[10px] text-yellow-400 font-bold flex items-center"><Star size={8} fill="currentColor" className="mr-0.5" /> {gift.price}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="mt-4 flex gap-2">
-                      <button className="flex-1 bg-blue-600 text-white font-bold py-2 rounded-xl text-sm">Bakiye Yükle</button>
-                      <button onClick={() => setShowGiftPanel(false)} className="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-sm">Kapat</button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
+          <div className="glass p-6 rounded-2xl flex items-center gap-4 opacity-60 grayscale">
+            <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400">
+              <Lock size={32} />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div>
+              <h3 className="font-bold">İleri Seviye Elektrik</h3>
+              <p className="text-sm text-slate-500">Eğitimi tamamla ve kilidi aç</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-// Needed icons
-import { Play, Music } from 'lucide-react';
