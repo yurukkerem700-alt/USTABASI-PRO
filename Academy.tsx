@@ -1,72 +1,113 @@
-import { ShoppingBag, Search, Filter, Star, ShoppingCart } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { Bot, Sparkles, Send, Calculator, Search, Briefcase, FileText, Image as ImageIcon, PenTool } from 'lucide-react';
 
-export default function Marketplace() {
-  const products = [
-    { id: 1, title: 'Bosch Profesyonel Kırıcı Delici (İkinci El)', price: '₺4.500', category: 'Ekipman', rating: 4.8, image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&q=80', seller: 'Ahmet Usta' },
-    { id: 2, title: 'Toptan Filli Boya İç Cephe (15L x 10 Kova)', price: '₺12.000', category: 'Malzeme', rating: 5.0, image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80', seller: 'Yapı Market A.Ş.' },
-    { id: 3, title: 'Makita Akülü Vidalama Seti (Sıfır Ayarında)', price: '₺3.200', category: 'Ekipman', rating: 4.5, image: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=400&q=80', seller: 'Mehmet Elektrik' },
-    { id: 4, title: '2. El İskele Sistemi (100 m2)', price: '₺18.500', category: 'Büyük Ekipman', rating: 4.2, image: 'https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?w=400&q=80', seller: 'Can İnşaat' },
-  ];
+export default function AIAssistant() {
+  const [activeTab, setActiveTab] = useState('chat');
+  const [messages, setMessages] = useState([
+    { type: 'ai', content: 'Merhaba! Ben Ustabaşı AI asistanınız. İhtiyacınız olan iş için fiyat tahmini yapabilir, portfolyonuzu analiz edebilir veya size teklif yazmanızda yardımcı olabilirim. Ne yapmak istersiniz?' }
+  ]);
+  const [input, setInput] = useState('');
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setMessages([...messages, { type: 'user', content: input }]);
+    setInput('');
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        type: 'ai', 
+        content: 'Bu talebinizi aldım. Şu anda demo modunda çalışıyorum ancak yakında size tam detaylı bir analiz ve öneri sunacağım.' 
+      }]);
+    }, 1000);
+  };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <ShoppingBag className="text-orange-500" size={32} /> USTABAŞI Marketplace
-          </h1>
-          <p className="text-slate-500 mt-2">Malzeme, ekipman ve ikinci el alet alım satım platformu.</p>
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div className="text-center space-y-2 mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 text-white shadow-lg mb-2">
+          <Bot size={32} />
         </div>
-        <button className="glass-button flex items-center gap-2 px-6">
-          <ShoppingCart size={18} /> İlan Ver
-        </button>
-      </div>
-
-      <div className="glass rounded-2xl p-3 flex gap-2">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input type="text" placeholder="Matkap, boya, iskele vb. arayın..." className="glass-input pl-10 py-2.5" />
-        </div>
-        <button className="glass-panel px-4 py-2 flex items-center gap-2 text-sm font-medium hover:bg-slate-100 transition-colors">
-          <Filter size={18} /> Filtrele
-        </button>
+        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Yapay Zeka Asistanı</h1>
+        <p className="text-slate-500">Kariyeriniz ve işleriniz için akıllı asistanınız</p>
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-        {['Tümü', 'İkinci El Ekipman', 'Sıfır Malzeme', 'Toptan Alım', 'Araç & İş Makinesi'].map((cat, i) => (
-          <button key={i} className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${i === 0 ? 'bg-orange-500 text-white shadow-md' : 'glass-panel hover:bg-slate-200 dark:hover:bg-slate-700'}`}>
-            {cat}
+        {[
+          { id: 'chat', name: 'Genel Sohbet', icon: Bot },
+          { id: 'career', name: 'Kariyer Danışmanı', icon: Briefcase },
+          { id: 'project', name: 'Proje Oluşturucu', icon: FileText },
+          { id: 'portfolio', name: 'Portfolyo Analizi', icon: ImageIcon },
+          { id: 'bid', name: 'Teklif Yazıcısı', icon: PenTool },
+        ].map(tab => (
+          <button 
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 whitespace-nowrap px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 shadow-sm' : 'glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+          >
+            <tab.icon size={16} /> {tab.name}
           </button>
         ))}
       </div>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product, i) => (
-          <motion.div 
-            key={product.id}
-            initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-            className="glass rounded-2xl overflow-hidden hover:shadow-xl transition-all group flex flex-col"
-          >
-            <div className="aspect-square relative overflow-hidden bg-slate-100">
-              <img src={product.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-2 right-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm">
-                <Star size={12} className="text-amber-500" fill="currentColor" /> {product.rating}
+      <div className="grid md:grid-cols-3 gap-6 mt-4">
+        <div className="md:col-span-2 glass rounded-3xl flex flex-col h-[500px] overflow-hidden shadow-xl">
+          <div className="p-4 border-b border-slate-200 dark:border-slate-700/50 bg-white/40 dark:bg-slate-900/40 flex items-center gap-2">
+            <Sparkles className="text-purple-500" size={20} />
+            <span className="font-bold capitalize">{activeTab === 'chat' ? 'Sohbet' : activeTab} Asistanı</span>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] rounded-2xl px-5 py-3 ${
+                  msg.type === 'user' 
+                    ? 'bg-blue-600 text-white rounded-br-sm' 
+                    : 'bg-white dark:bg-slate-800 shadow-md rounded-bl-sm border border-slate-100 dark:border-slate-700'
+                }`}>
+                  {msg.content}
+                </div>
               </div>
+            ))}
+          </div>
+
+          <div className="p-4 bg-white/40 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-700/50">
+            <form onSubmit={handleSend} className="flex gap-2 relative">
+              <input 
+                type="text" 
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder={activeTab === 'bid' ? 'Hangi işe teklif vermek istiyorsunuz?' : 'Mesajınızı yazın...'} 
+                className="flex-1 glass-input pr-12"
+              />
+              <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors">
+                <Send size={20} />
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="glass p-6 rounded-3xl bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-100 dark:border-purple-800/30">
+            <h3 className="font-bold mb-2 flex items-center gap-2 text-purple-700 dark:text-purple-400">
+              <Sparkles size={18} /> AI İpuçları
+            </h3>
+            {activeTab === 'chat' && <p className="text-sm text-slate-600 dark:text-slate-300">İşinizin detaylarını yazarak ortalama piyasa fiyatlarını öğrenebilirsiniz.</p>}
+            {activeTab === 'career' && <p className="text-sm text-slate-600 dark:text-slate-300">Yeteneklerinizi girin, size hangi eğitimleri almanız gerektiğini ve kariyer hedeflerinizi çıkaralım.</p>}
+            {activeTab === 'project' && <p className="text-sm text-slate-600 dark:text-slate-300">Evinizde yapmak istediğiniz değişikliği anlatın, size malzeme listesi ve bütçe planı hazırlayalım.</p>}
+            {activeTab === 'portfolio' && <p className="text-sm text-slate-600 dark:text-slate-300">Profil linkinizi veya fotoğraflarınızı paylaşın, müşterileri daha çok etkilemek için tavsiyeler verelim.</p>}
+            {activeTab === 'bid' && <p className="text-sm text-slate-600 dark:text-slate-300">İlan detaylarını yapıştırın, size en profesyonel ve ikna edici teklif metnini saniyeler içinde yazalım.</p>}
+          </div>
+
+          <div className="glass-panel p-5 rounded-2xl hover:border-blue-500 transition-colors cursor-pointer group">
+            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <Search size={20} />
             </div>
-            <div className="p-4 flex flex-col flex-1">
-              <span className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-1">{product.category}</span>
-              <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">{product.title}</h3>
-              <p className="text-xs text-slate-500 mb-4">Satıcı: {product.seller}</p>
-              <div className="mt-auto flex items-center justify-between">
-                <span className="font-bold text-lg">{product.price}</span>
-                <button className="text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-lg transition-colors">
-                  İncele
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+            <h3 className="font-bold mb-1 text-sm">Akıllı Eşleştirme</h3>
+            <p className="text-xs text-slate-500">Profilinize ve işinize en uygun bağlantıları bulun.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

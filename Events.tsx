@@ -1,77 +1,71 @@
-import { useState } from 'react';
-import { Users, TrendingUp, Briefcase, DollarSign, PieChart, Building } from 'lucide-react';
+import { Globe, MapPin, DollarSign, Filter, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export default function CompanyDashboard() {
+export default function GlobalMarket() {
+  const globalJobs = [
+    { id: 1, title: 'Senior Electrician Needed for Hotel Project', company: 'Dubai Builders LLC', location: 'Dubai, BAE', price: '$4,500 / month', type: 'Tam Zamanlı', flag: '🇦🇪' },
+    { id: 2, title: 'İnşaat Mühendisi ve Şantiye Şefi', company: 'EuroConstruct', location: 'Berlin, Almanya', price: '€5,200 / month', type: 'Sözleşmeli', flag: '🇩🇪' },
+    { id: 3, title: 'Experienced Plumber for Residential Complex', company: 'UK Homes', location: 'Londra, İngiltere', price: '£3,800 / month', type: 'Tam Zamanlı', flag: '🇬🇧' },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Firma Merkezi</h1>
-          <p className="text-slate-500">Mega İnşaat A.Ş. Yönetim Paneli</p>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="glass p-8 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
+        <div className="absolute right-0 top-0 opacity-10">
+          <Globe size={200} />
         </div>
-        <button className="glass-button text-sm py-2">Yeni İlan Çık</button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg"><Briefcase size={20} /></div>
-            <span className="text-xs font-bold text-green-500 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">+12%</span>
+        <div className="relative z-10 max-w-2xl">
+          <h1 className="text-4xl font-bold mb-4">Uluslararası İş Pazarı</h1>
+          <p className="text-slate-300 text-lg mb-6">Yeteneklerinizi sınırların ötesine taşıyın. Yurtdışındaki projelere başvurun, farklı para birimleriyle kazanç sağlayın.</p>
+          <div className="flex gap-4">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-colors">İş İlanlarını İncele</button>
+            <button className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-colors backdrop-blur-sm border border-white/20">Vize ve Denklik Desteği</button>
           </div>
-          <h3 className="text-2xl font-bold">14</h3>
-          <p className="text-sm text-slate-500">Aktif Proje</p>
-        </div>
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg"><Users size={20} /></div>
-          </div>
-          <h3 className="text-2xl font-bold">45</h3>
-          <p className="text-sm text-slate-500">Çalışan Usta</p>
-        </div>
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg"><DollarSign size={20} /></div>
-          </div>
-          <h3 className="text-2xl font-bold">₺1.2M</h3>
-          <p className="text-sm text-slate-500">Aylık Harcama</p>
-        </div>
-        <div className="glass p-5 rounded-2xl">
-          <div className="flex justify-between items-start mb-2">
-            <div className="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-lg"><TrendingUp size={20} /></div>
-          </div>
-          <h3 className="text-2xl font-bold">4.8</h3>
-          <p className="text-sm text-slate-500">Firma Puanı</p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 glass p-6 rounded-3xl">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg flex items-center gap-2"><Building size={20} /> Departmanlar</h3>
-            <button className="text-sm text-blue-600 font-medium">Tümünü Gör</button>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="glass-panel p-2 flex items-center gap-2 rounded-xl flex-1">
+          <div className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm font-bold text-sm flex items-center gap-2 cursor-pointer">
+            <Globe size={16} className="text-blue-500" /> Tüm Ülkeler <ChevronDown size={14} />
           </div>
-          <div className="space-y-4">
-            {['Elektrik', 'Sıhhi Tesisat', 'İnce İşler', 'Kaba İnşaat'].map((dep, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <div>
-                  <h4 className="font-bold">{dep} Departmanı</h4>
-                  <p className="text-xs text-slate-500 mt-1">{10 - i} Aktif Usta • {3 - (i%2)} Devam Eden Proje</p>
-                </div>
-                <button className="text-sm px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg font-medium">Yönet</button>
+          <div className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer transition-colors">Almanya</div>
+          <div className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer transition-colors">BAE</div>
+          <div className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer transition-colors">İngiltere</div>
+        </div>
+        <button className="glass-button flex items-center gap-2 text-sm px-6 py-2">
+          <Filter size={16} /> Detaylı Filtre
+        </button>
+      </div>
+
+      <div className="grid gap-4">
+        {globalJobs.map((job, i) => (
+          <motion.div 
+            key={job.id}
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+            className="glass p-6 rounded-2xl flex flex-col md:flex-row gap-6 md:items-center hover:shadow-xl transition-all group border border-slate-200 dark:border-slate-800"
+          >
+            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-3xl shrink-0 shadow-inner">
+              {job.flag}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2 py-0.5 rounded uppercase tracking-wider">{job.type}</span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass p-6 rounded-3xl flex flex-col">
-          <h3 className="font-bold text-lg flex items-center gap-2 mb-6"><PieChart size={20} /> Raporlar</h3>
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
-            <PieChart size={48} className="text-slate-300 mb-4" />
-            <h4 className="font-medium mb-1">Detaylı Analiz</h4>
-            <p className="text-xs text-slate-500 mb-4">Maliyet ve performans raporlarınızı buradan indirebilirsiniz.</p>
-            <button className="glass-button text-xs py-2 px-4">Rapor Oluştur</button>
-          </div>
-        </div>
+              <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">{job.title}</h3>
+              <p className="text-slate-500 font-medium">{job.company}</p>
+              <div className="flex flex-wrap gap-4 mt-3 text-sm text-slate-600 dark:text-slate-400">
+                <span className="flex items-center gap-1"><MapPin size={16} className="text-slate-400" /> {job.location}</span>
+                <span className="flex items-center gap-1 font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-lg"><DollarSign size={16} /> {job.price}</span>
+              </div>
+            </div>
+            <div>
+              <button className="w-full md:w-auto bg-slate-900 hover:bg-black text-white dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 px-6 py-3 rounded-xl font-bold transition-colors">
+                Apply Now
+              </button>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

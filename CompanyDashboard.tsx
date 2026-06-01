@@ -1,57 +1,59 @@
-@import "tailwindcss";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
-@theme {
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
-}
+export default function Professions() {
+  const [professions, setProfessions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-@layer base {
-  html {
-    -webkit-tap-highlight-color: transparent;
-  }
-  body {
-    @apply text-slate-900 transition-colors duration-300 min-h-screen;
-    background-color: #f8fafc;
-    background-image: 
-      radial-gradient(at 40% 20%, hsla(228,100%,74%,0.4) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(189,100%,56%,0.4) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsla(355,100%,93%,0.4) 0px, transparent 50%);
-    background-attachment: fixed;
-  }
-  
-  .dark body {
-    @apply text-slate-50;
-    background-color: #0f172a;
-    background-image: 
-      radial-gradient(at 40% 20%, hsla(228,100%,74%,0.15) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsla(355,100%,93%,0.1) 0px, transparent 50%);
-  }
-}
+  useEffect(() => {
+    fetch('/api/professions')
+      .then(res => res.json())
+      .then(data => {
+        setProfessions(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
-@layer components {
-  .glass {
-    @apply bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/50 dark:border-slate-700/80 shadow-lg;
-  }
-  .glass-panel {
-    @apply bg-white/50 dark:bg-slate-800/70 backdrop-blur-md border border-white/30 dark:border-slate-700/60 rounded-2xl;
-  }
-  .glass-input {
-    @apply w-full bg-white/60 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 backdrop-blur-sm transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400;
-  }
-  .glass-button {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95;
-  }
-}
+  return (
+    <div className="space-y-6">
+      <div className="text-center max-w-2xl mx-auto mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Meslekler</h1>
+        <p className="text-slate-500 dark:text-slate-400">Platformumuzdaki tüm ustalık alanlarını keşfedin ve ihtiyacınıza uygun uzmanı bulun.</p>
+      </div>
 
-/* Hide scrollbar for clean UI */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+            <div key={i} className="glass-panel p-6 rounded-2xl animate-pulse flex flex-col items-center">
+              <div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-full mb-3"></div>
+              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-20 mb-2"></div>
+              <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-12"></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {professions.map((prof, i) => (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.05 }}
+              key={prof.id} 
+              className="glass p-6 rounded-2xl flex flex-col items-center text-center hover:-translate-y-2 transition-transform cursor-pointer group"
+            >
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center text-2xl mb-4 group-hover:bg-blue-500 group-hover:text-white transition-colors shadow-sm">
+                {prof.icon}
+              </div>
+              <h3 className="font-bold text-lg mb-1">{prof.name}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{prof.count} Usta</p>
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

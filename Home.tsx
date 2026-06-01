@@ -1,111 +1,83 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import supabase from '../lib/supabase';
-import { signInWithGoogle } from '../lib/googleAuth';
-import { useLanguage } from '../contexts/LanguageContext';
+import { CheckCircle, Zap, Shield, Star, Crown } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export default function Register() {
-  const { t } = useLanguage();
-  const [role, setRole] = useState('usta');
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const { data, error: authError } = await supabase.auth.signUp({ email, password });
-      if (authError) throw authError;
-
-      if (data.user) {
-        // Create user profile in database
-        const res = await fetch('/api/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: data.user.id,
-            email,
-            role,
-            full_name: fullName
-          })
-        });
-        
-        if (!res.ok) throw new Error('Profil oluşturulamadı');
-        navigate('/profile');
-      }
-    } catch (err: any) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-
+export default function PlusSubscription() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden py-12">
-      <div className="absolute top-4 left-4 z-10">
-        <Link to="/" className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">
-          <ArrowLeft size={20} /> {t('Ana Sayfaya Dön')}
-        </Link>
+    <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-700 pb-10">
+      <div className="text-center space-y-4 pt-8">
+        <div className="inline-flex items-center justify-center p-3 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 text-white shadow-lg mb-2">
+          <Crown size={32} />
+        </div>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+          USTABAŞI <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600">Plus</span>
+        </h1>
+        <p className="text-xl text-slate-500 max-w-2xl mx-auto">
+          Platformun tüm sınırlarını kaldırın. Düşük komisyon, sınırsız AI desteği ve aramalarda her zaman en üstte olma ayrıcalığı.
+        </p>
       </div>
-      
-      <div className="w-full max-w-md glass p-8 rounded-3xl z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold">{t('Aramıza Katılın')}</h1>
-          <p className="text-slate-500 mt-2">{t('Yeni bir hesap oluşturun')}</p>
-        </div>
-        
-        <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-6">
-          <button onClick={() => setRole('usta')} type="button" className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${role === 'usta' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500'}`}>{t('Usta Olarak')}</button>
-          <button onClick={() => setRole('musteri')} type="button" className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${role === 'musteri' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500'}`}>{t('Müşteri Olarak')}</button>
-          <button onClick={() => setRole('firma')} type="button" className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${role === 'firma' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500'}`}>{t('Firma Olarak')}</button>
-        </div>
-        
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-xl text-sm">{error}</div>}
 
-        <form className="space-y-4" onSubmit={handleRegister}>
-          <div>
-            <label className="block text-sm font-medium mb-1 ml-1">{t('Ad Soyad')}</label>
-            <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} placeholder={t("Adınız Soyadınız")} className="glass-input" />
+      <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        {/* Basic */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="glass p-8 rounded-3xl flex flex-col"
+        >
+          <h3 className="text-xl font-bold mb-2">Standart</h3>
+          <p className="text-sm text-slate-500 mb-6">Platformu keşfetmek için</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">Ücretsiz</span>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1 ml-1">{t('E-posta')}</label>
-            <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="ornek@email.com" className="glass-input" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1 ml-1">{t('Şifre')}</label>
-            <input type="password" required minLength={6} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="glass-input" />
+          <ul className="space-y-4 mb-8 flex-1">
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-slate-300 shrink-0" /> Temel profil oluşturma</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-slate-300 shrink-0" /> Ayda 5 teklif hakkı</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-slate-300 shrink-0" /> %10 Escrow komisyonu</li>
+          </ul>
+          <button className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-slate-600 dark:text-slate-300">Mevcut Plan</button>
+        </motion.div>
+
+        {/* Plus (Highlighted) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+          className="p-8 rounded-3xl flex flex-col bg-gradient-to-b from-slate-900 to-slate-800 text-white shadow-2xl relative transform md:-translate-y-4 border border-yellow-500/30"
+        >
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-yellow-400 to-amber-600"></div>
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            En Çok Tercih Edilen
           </div>
           
-          <button type="submit" disabled={loading} className="glass-button w-full mt-6 disabled:opacity-50">
-            {loading ? t('Kayıt Olunuyor...') : t('Kayıt Ol')}
-          </button>
-        </form>
+          <h3 className="text-xl font-bold mb-2 text-yellow-400 flex items-center gap-2"><Crown size={20} /> Plus</h3>
+          <p className="text-sm text-slate-400 mb-6">Profesyonel ustalar için</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₺299</span><span className="text-slate-400">/ay</span>
+          </div>
+          <ul className="space-y-4 mb-8 flex-1">
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Sınırsız teklif hakkı</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Sadece %3 Escrow komisyonu</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Aramalarda üst sıralarda çıkma</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Plus üye rozeti (Güven verir)</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-yellow-400 shrink-0" /> Sınırsız AI Asistan kullanımı</li>
+          </ul>
+          <button className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-600 font-bold text-white shadow-lg hover:shadow-yellow-500/25 transition-shadow">Plus'a Geç</button>
+        </motion.div>
 
-        <div className="mt-6 flex items-center gap-4">
-          <div className="h-px bg-slate-200 dark:bg-slate-700 flex-1"></div>
-          <span className="text-xs text-slate-400 font-medium uppercase">{t('VEYA')}</span>
-          <div className="h-px bg-slate-200 dark:bg-slate-700 flex-1"></div>
-        </div>
-        
-        <button onClick={() => signInWithGoogle('USTABAŞI')} className="w-full mt-6 flex items-center justify-center gap-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.67 15.63 16.71 16.79 15.54 17.57V20.31H19.1C21.01 18.55 22.56 15.65 22.56 12.25Z" fill="#4285F4"/>
-            <path d="M12 23C14.97 23 17.46 22.02 19.1 20.31L15.54 17.57C14.65 18.17 13.43 18.55 12 18.55C9.24 18.55 6.9 16.68 6.03 14.18H2.36V17.03C4.14 20.56 7.78 23 12 23Z" fill="#34A853"/>
-            <path d="M6.03 14.18C5.81 13.52 5.68 12.78 5.68 12C5.68 11.22 5.81 10.48 6.03 9.82V6.97H2.36C1.63 8.43 1.2 10.15 1.2 12C1.2 13.85 1.63 15.57 2.36 17.03L6.03 14.18Z" fill="#FBBC05"/>
-            <path d="M12 5.45C13.62 5.45 15.06 6.01 16.2 7.08L19.18 4.1C17.46 2.47 14.97 1 12 1C7.78 1 4.14 3.44 2.36 6.97L6.03 9.82C6.9 7.32 9.24 5.45 12 5.45Z" fill="#EA4335"/>
-          </svg>
-          {t('Google ile Kayıt Ol')}
-        </button>
-        
-        <div className="mt-6 text-center text-sm text-slate-500">
-          {t('Zaten hesabınız var mı?')} <Link to="/login" className="text-blue-600 font-medium hover:underline">{t('Giriş Yapın')}</Link>
-        </div>
+        {/* Kurumsal */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
+          className="glass p-8 rounded-3xl flex flex-col"
+        >
+          <h3 className="text-xl font-bold mb-2">Kurumsal</h3>
+          <p className="text-sm text-slate-500 mb-6">Büyük firmalar ve ekipler için</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₺999</span><span className="text-slate-500">/ay</span>
+          </div>
+          <ul className="space-y-4 mb-8 flex-1">
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> Plus'taki her şey</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> 10 Alt çalışan hesabı (Departmanlar)</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> Toplu faturalandırma ve API desteği</li>
+            <li className="flex gap-3 text-sm"><CheckCircle size={20} className="text-blue-500 shrink-0" /> Özel müşteri temsilcisi</li>
+          </ul>
+          <button className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">İletişime Geç</button>
+        </motion.div>
       </div>
     </div>
   );

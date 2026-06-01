@@ -1,127 +1,145 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import supabase from '../lib/supabase';
-import { signInWithGoogle } from '../lib/googleAuth';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useState, useEffect } from 'react';
+import { User, Mail, MapPin, Star, Settings, Image as ImageIcon, Plus, Trophy, ShieldCheck, Award } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function Login() {
-  const { t } = useLanguage();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isReset, setIsReset] = useState(false);
-  const [resetMessage, setResetMessage] = useState('');
-  const navigate = useNavigate();
+export default function Profile() {
+  const { user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState('portfolio');
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: profile?.full_name || '',
+    bio: profile?.bio || '',
+    location: profile?.location || '',
+    phone: profile?.phone || '',
+  });
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      navigate('/profile');
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setResetMessage('');
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/settings`,
+  const handleSave = async () => {
+    await fetch('/api/users', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: user.id, ...formData })
     });
-
-    if (error) {
-      setError(error.message);
-    } else {
-      setResetMessage(t('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.'));
-    }
-    setLoading(false);
+    setIsEditing(false);
+    window.location.reload(); // Refresh to get updated profile context
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden py-12">
-      <div className="absolute top-4 left-4 z-10">
-        <Link to="/" className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">
-          <ArrowLeft size={20} /> {t('Ana Sayfaya Dön')}
-        </Link>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="glass p-6 md:p-8 rounded-3xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+        
+        <div className="relative mt-12 flex flex-col md:flex-row items-center md:items-end gap-6">
+          <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-800 bg-slate-200 overflow-hidden shrink-0 relative group">
+            <img src={profile?.avatar_url || `https://ui-avatars.com/api/?name=${profile?.full_name}&size=128&background=random`} alt="Profile" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition-all">
+              <span className="text-white text-xs font-medium">Değiştir</span>
+            </div>
+          </div>
+          <div className="flex-1 text-center md:text-left mb-2">
+            {isEditing ? (
+              <input type="text" value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="glass-input text-xl font-bold mb-2 p-2" />
+            ) : (
+              <h1 className="text-2xl font-bold">{profile?.full_name}</h1>
+            )}
+            <p className="text-slate-500 dark:text-slate-400 font-medium capitalize">{profile?.role}</p>
+            <div className="flex items-center justify-center md:justify-start gap-4 mt-2 text-sm text-slate-600 dark:text-slate-300">
+              <span className="flex items-center gap-1"><MapPin size={16} /> {profile?.location || 'Konum belirtilmemiş'}</span>
+              <span className="flex items-center gap-1 text-amber-500"><Star size={16} fill="currentColor" /> {profile?.rating || '0.0'}</span>
+            </div>
+          </div>
+          {isEditing ? (
+            <div className="flex gap-2 mb-2">
+              <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-sm font-medium">İptal</button>
+              <button onClick={handleSave} className="glass-button py-2 px-4 text-sm">Kaydet</button>
+            </div>
+          ) : (
+            <button onClick={() => setIsEditing(true)} className="glass-button flex items-center gap-2 text-sm py-2 px-4 mb-2">
+              <Settings size={16} /> Profili Düzenle
+            </button>
+          )}
+        </div>
       </div>
-      
-      <div className="w-full max-w-md glass p-8 rounded-3xl z-10">
-        <div className="text-center mb-8">
-          <img src="/uploads/upload_1.png" alt="Logo" className="h-16 mx-auto mb-4 object-contain rounded-xl" onError={(e) => { e.currentTarget.style.display = 'none' }} />
-          <h1 className="text-2xl font-bold">{isReset ? t('Şifremi Unuttum') : t('Tekrar Hoş Geldiniz')}</h1>
-          <p className="text-slate-500 mt-2">{isReset ? t('E-posta adresinizi girin') : t('Hesabınıza giriş yapın')}</p>
+
+      <div className="grid md:grid-cols-3 gap-6">
+        <div className="md:col-span-1 space-y-6">
+          <div className="glass-panel p-6 rounded-2xl">
+            <h3 className="font-bold mb-4">Hakkında</h3>
+            {isEditing ? (
+              <textarea value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="glass-input text-sm mb-4 resize-none" rows={4} placeholder="Kendinizden bahsedin..."></textarea>
+            ) : (
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 whitespace-pre-wrap">
+                {profile?.bio || 'Henüz bir açıklama eklenmemiş.'}
+              </p>
+            )}
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2 text-slate-500"><Mail size={16} /> {profile?.email}</div>
+              {isEditing ? (
+                <div className="flex items-center gap-2">
+                  <User size={16} className="text-slate-500" />
+                  <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="Telefon" className="glass-input p-1.5 text-xs" />
+                </div>
+              ) : (
+                profile?.phone && <div className="flex items-center gap-2 text-slate-500"><User size={16} /> {profile.phone}</div>
+              )}
+            </div>
+          </div>
+
+          {/* Advanced Badge System */}
+          <div className="glass-panel p-6 rounded-2xl">
+            <h3 className="font-bold mb-4">Başarılar & Rozetler</h3>
+            <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col items-center gap-1 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800/50" title="100 İş Tamamladı">
+                <Trophy size={24} className="text-yellow-500" />
+                <span className="text-[10px] font-bold text-yellow-700 dark:text-yellow-400">100+ İş</span>
+              </div>
+              <div className="flex flex-col items-center gap-1 p-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800/50" title="30 Gün Aktif">
+                <Star size={24} className="text-orange-500" fill="currentColor" />
+                <span className="text-[10px] font-bold text-orange-700 dark:text-orange-400">30 Gün</span>
+              </div>
+              <div className="flex flex-col items-center gap-1 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800/50" title="Akademi Mezunu">
+                <Award size={24} className="text-blue-500" />
+                <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400">Akademi</span>
+              </div>
+              <div className="flex flex-col items-center gap-1 p-2 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800/50" title="Premium Üye">
+                <ShieldCheck size={24} className="text-purple-500" />
+                <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400">Premium</span>
+              </div>
+            </div>
+          </div>
         </div>
         
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-xl text-sm">{error}</div>}
-        {resetMessage && <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-xl text-sm">{resetMessage}</div>}
+        <div className="md:col-span-2 space-y-6">
+          <div className="flex gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+            <button onClick={() => setActiveTab('portfolio')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'portfolio' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>Portfolyo</button>
+            <button onClick={() => setActiveTab('reviews')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'reviews' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>Yorumlar</button>
+          </div>
 
-        {!isReset ? (
-          <form className="space-y-4" onSubmit={handleLogin}>
-            <div>
-              <label className="block text-sm font-medium mb-1 ml-1">{t('E-posta')}</label>
-              <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="ornek@email.com" className="glass-input" />
-            </div>
-            <div>
-              <div className="flex justify-between items-center mb-1 ml-1">
-                <label className="block text-sm font-medium">{t('Şifre')}</label>
-                <button type="button" onClick={() => setIsReset(true)} className="text-xs text-blue-600 hover:underline">{t('Şifremi Unuttum')}</button>
+          {activeTab === 'portfolio' && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="font-bold">Çalışmalarım</h3>
+                <button className="flex items-center gap-1 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 px-3 py-1.5 rounded-lg transition-colors">
+                  <Plus size={16} /> Yeni Ekle
+                </button>
               </div>
-              <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="glass-input" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {/* Placeholder portfolio items */}
+                <div className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-xl flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-700">
+                  <ImageIcon size={32} className="mb-2 opacity-50" />
+                  <span className="text-xs font-medium">Görsel Yok</span>
+                </div>
+              </div>
             </div>
-            
-            <button type="submit" disabled={loading} className="glass-button w-full mt-6 disabled:opacity-50">
-              {loading ? t('Giriş Yapılıyor...') : t('Giriş Yap')}
-            </button>
-          </form>
-        ) : (
-          <form className="space-y-4" onSubmit={handleResetPassword}>
-            <div>
-              <label className="block text-sm font-medium mb-1 ml-1">{t('E-posta')}</label>
-              <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="ornek@email.com" className="glass-input" />
-            </div>
-            
-            <button type="submit" disabled={loading} className="glass-button w-full mt-6 disabled:opacity-50">
-              {loading ? t('Gönderiliyor...') : t('Sıfırlama Bağlantısı Gönder')}
-            </button>
-            <button type="button" onClick={() => setIsReset(false)} className="w-full text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mt-4">
-              {t('Giriş sayfasına dön')}
-            </button>
-          </form>
-        )}
-        
-        {!isReset && (
-          <>
-            <div className="mt-6 flex items-center gap-4">
-              <div className="h-px bg-slate-200 dark:bg-slate-700 flex-1"></div>
-              <span className="text-xs text-slate-400 font-medium uppercase">{t('VEYA')}</span>
-              <div className="h-px bg-slate-200 dark:bg-slate-700 flex-1"></div>
-            </div>
-            
-            <button onClick={() => signInWithGoogle('USTABAŞI')} className="w-full mt-6 flex items-center justify-center gap-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 py-3 rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.67 15.63 16.71 16.79 15.54 17.57V20.31H19.1C21.01 18.55 22.56 15.65 22.56 12.25Z" fill="#4285F4"/>
-                <path d="M12 23C14.97 23 17.46 22.02 19.1 20.31L15.54 17.57C14.65 18.17 13.43 18.55 12 18.55C9.24 18.55 6.9 16.68 6.03 14.18H2.36V17.03C4.14 20.56 7.78 23 12 23Z" fill="#34A853"/>
-                <path d="M6.03 14.18C5.81 13.52 5.68 12.78 5.68 12C5.68 11.22 5.81 10.48 6.03 9.82V6.97H2.36C1.63 8.43 1.2 10.15 1.2 12C1.2 13.85 1.63 15.57 2.36 17.03L6.03 14.18Z" fill="#FBBC05"/>
-                <path d="M12 5.45C13.62 5.45 15.06 6.01 16.2 7.08L19.18 4.1C17.46 2.47 14.97 1 12 1C7.78 1 4.14 3.44 2.36 6.97L6.03 9.82C6.9 7.32 9.24 5.45 12 5.45Z" fill="#EA4335"/>
-              </svg>
-              Google ile Giriş Yap
-            </button>
+          )}
 
-            <div className="mt-6 text-center text-sm text-slate-500">
-              {t('Hesabınız yok mu?')} <Link to="/register" className="text-blue-600 font-medium hover:underline">{t('Kayıt Olun')}</Link>
+          {activeTab === 'reviews' && (
+            <div className="space-y-4">
+              <div className="text-center py-10 glass-panel">
+                <p className="text-slate-500">Henüz yorum yapılmamış.</p>
+              </div>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

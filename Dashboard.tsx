@@ -1,178 +1,105 @@
 import { useState } from 'react';
-import { User, Bell, Lock, Globe, Moon, CreditCard, Shield, Palette } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Play, Award, CheckCircle, Lock, BookOpen } from 'lucide-react';
 
-export default function Settings() {
-  const { profile } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const { lang, setLang, t } = useLanguage();
-  const [activeTab, setActiveTab] = useState('account');
+export default function Academy() {
+  const [activeTab, setActiveTab] = useState('courses');
 
-  const tabs = [
-    { id: 'account', name: t('Hesap Bilgileri'), icon: User },
-    { id: 'notifications', name: t('Bildirimler'), icon: Bell },
-    { id: 'privacy', name: t('Gizlilik ve Güvenlik'), icon: Lock },
-    { id: 'appearance', name: t('Görünüm ve Dil Ayarları'), icon: Moon },
-    { id: 'billing', name: t('Ödeme ve Fatura'), icon: CreditCard },
+  const courses = [
+    { id: 1, title: 'İleri Seviye Akıllı Ev Sistemleri', category: 'Elektrik', duration: '4 Saat', level: 'İleri', progress: 45, image: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=400&q=80' },
+    { id: 2, title: 'Yeni Nesil Isı Pompası Kurulumu', category: 'Tesisat', duration: '6 Saat', level: 'Orta', progress: 0, image: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&q=80' },
+    { id: 3, title: 'İş Güvenliği ve Şantiye Kuralları', category: 'Genel', duration: '2 Saat', level: 'Başlangıç', progress: 100, image: 'https://images.unsplash.com/photo-1504307651254-35680f356f58?w=400&q=80' },
   ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-700">
-      <h1 className="text-3xl font-bold">{t('Ayarlar')}</h1>
-
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar */}
-        <div className="w-full md:w-64 space-y-1">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-md' : 'glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'}`}
-            >
-              <tab.icon size={18} /> {tab.name}
-            </button>
-          ))}
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Ustabaşı Akademi</h1>
+          <p className="text-slate-500 mt-1">Kendini geliştir, sertifikaları topla ve sıralamada yüksel.</p>
         </div>
-
-        {/* Content Area */}
-        <div className="flex-1 glass p-6 md:p-8 rounded-3xl min-h-[500px]">
-          {activeTab === 'account' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold mb-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">{t('Hesap Bilgileri')}</h2>
-              <div className="flex items-center gap-4 mb-6">
-                <img src={profile?.avatar_url || `https://ui-avatars.com/api/?name=${profile?.full_name}&background=random`} className="w-20 h-20 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700" />
-                <div>
-                  <button className="glass-button text-sm py-2 px-4 mb-1">{t('Fotoğrafı Değiştir')}</button>
-                  <p className="text-xs text-slate-500">{t('Maksimum 2MB, JPG veya PNG.')}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t('Ad Soyad')}</label>
-                  <input type="text" defaultValue={profile?.full_name} className="glass-input" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t('E-posta')}</label>
-                  <input type="email" defaultValue={profile?.email} disabled className="glass-input opacity-50" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t('Telefon')}</label>
-                  <input type="text" defaultValue={profile?.phone} className="glass-input" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">{t('Konum')}</label>
-                  <input type="text" defaultValue={profile?.location} className="glass-input" />
-                </div>
-              </div>
-              <button className="glass-button w-full sm:w-auto px-8 mt-4">{t('Değişiklikleri Kaydet')}</button>
-            </div>
-          )}
-
-          {activeTab === 'notifications' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold mb-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">{t('Bildirim Tercihleri')}</h2>
-              <div className="space-y-4">
-                {[
-                  { title: t('Yeni İş İlanları'), desc: t('Bölgemde ve yeteneklerime uygun yeni iş ilanları açıldığında.') },
-                  { title: t('Mesaj ve Teklifler'), desc: t('Birisi bana mesaj gönderdiğinde veya teklifime yanıt verdiğinde.') },
-                  { title: t('Pazarlama ve Kampanyalar'), desc: t('USTABAŞI indirimleri ve kampanya haberleri.') },
-                  { title: t('Ezan ve Takvim Hatırlatmaları'), desc: t('Namaz vakitleri ve dini gün bildirimleri.') },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700/50">
-                    <div>
-                      <p className="font-bold text-sm">{item.title}</p>
-                      <p className="text-xs text-slate-500">{item.desc}</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" defaultChecked={i < 2} />
-                      <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'appearance' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold mb-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">{t('Görünüm ve Dil Ayarları')}</h2>
-              
-              <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700/50">
-                <div>
-                  <p className="font-bold text-sm">{t('Uygulama Dili (Language)')}</p>
-                  <p className="text-xs text-slate-500">{t('Platformun arayüz dilini değiştirin.')}</p>
-                </div>
-                <div className="flex gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-                  <button onClick={() => setLang('tr')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${lang === 'tr' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500'}`}>{t('Türkçe')}</button>
-                  <button onClick={() => setLang('en')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${lang === 'en' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500'}`}>{t('English')}</button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700/50">
-                <div>
-                  <p className="font-bold text-sm">{t('Karanlık Mod (Dark Mode)')}</p>
-                  <p className="text-xs text-slate-500">{t('Göz yorgunluğunu azaltmak için karanlık temayı kullanın.')}</p>
-                </div>
-                <button onClick={toggleTheme} className="glass-panel p-2 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700">
-                  {theme === 'dark' ? <Moon size={20} className="text-blue-500" /> : <Sun size={20} className="text-amber-500" />}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-700/50">
-                <div>
-                  <p className="font-bold text-sm">{t('Tema Vurgu Rengi')}</p>
-                  <p className="text-xs text-slate-500">{t('Butonlar ve aktif öğeler için renk seçin.')}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button className="w-8 h-8 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-blue-600 dark:ring-offset-slate-900"></button>
-                  <button className="w-8 h-8 rounded-full bg-purple-600 opacity-50 hover:opacity-100 transition-opacity"></button>
-                  <button className="w-8 h-8 rounded-full bg-green-600 opacity-50 hover:opacity-100 transition-opacity"></button>
-                  <button className="w-8 h-8 rounded-full bg-orange-500 opacity-50 hover:opacity-100 transition-opacity"></button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'privacy' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold mb-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">{t('Gizlilik ve Güvenlik')}</h2>
-              <button className="flex items-center gap-3 w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left">
-                <Shield className="text-blue-500" size={24} />
-                <div>
-                  <p className="font-bold text-sm">{t('Şifre Değiştir')}</p>
-                  <p className="text-xs text-slate-500">{t('Hesap güvenliğiniz için şifrenizi güncelleyin.')}</p>
-                </div>
-              </button>
-              <button className="flex items-center gap-3 w-full p-4 rounded-xl border border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors text-left">
-                <Lock className="text-red-500" size={24} />
-                <div>
-                  <p className="font-bold text-sm text-red-600 dark:text-red-400">{t('Hesabı Sil')}</p>
-                  <p className="text-xs text-red-500/70">{t('Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinir.')}</p>
-                </div>
-              </button>
-            </div>
-          )}
-          
-          {activeTab === 'billing' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold mb-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">{t('Ödeme ve Fatura')}</h2>
-              <div className="p-6 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl flex justify-between items-center">
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">{t('Mevcut Plan')}</p>
-                  <h3 className="text-2xl font-bold text-yellow-400">{t('Standart Üyelik')}</h3>
-                </div>
-                <button className="bg-yellow-500 text-slate-900 font-bold px-6 py-2 rounded-xl hover:bg-yellow-400 transition-colors">{t("Plus'a Yükselt")}</button>
-              </div>
-              <p className="text-sm text-slate-500 text-center mt-4">{t('Henüz kayıtlı bir ödeme yönteminiz bulunmuyor.')}</p>
-            </div>
-          )}
+        <div className="flex items-center gap-2 glass-panel px-4 py-2">
+          <Award className="text-amber-500" />
+          <span className="font-bold">Seviye 4 Usta</span>
+          <div className="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full ml-2 overflow-hidden">
+            <div className="h-full bg-amber-500 w-[60%]"></div>
+          </div>
         </div>
       </div>
+
+      <div className="flex gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+        <button onClick={() => setActiveTab('courses')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'courses' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'}`}>Eğitimler</button>
+        <button onClick={() => setActiveTab('certificates')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'certificates' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'}`}>Sertifikalarım</button>
+        <button onClick={() => setActiveTab('exams')} className={`pb-2 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'exams' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500'}`}>Sınavlar</button>
+      </div>
+
+      {activeTab === 'courses' && (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map(course => (
+            <div key={course.id} className="glass rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-transform">
+              <div className="relative h-48">
+                <img src={course.image} className="w-full h-full object-cover" alt={course.title} />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                    <Play fill="currentColor" size={24} />
+                  </div>
+                </div>
+                <div className="absolute top-3 left-3 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white text-xs font-medium">
+                  {course.category}
+                </div>
+              </div>
+              <div className="p-5">
+                <h3 className="font-bold mb-2 line-clamp-2">{course.title}</h3>
+                <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
+                  <span className="flex items-center gap-1"><BookOpen size={14} /> {course.duration}</span>
+                  <span>•</span>
+                  <span>{course.level}</span>
+                </div>
+                
+                {course.progress > 0 ? (
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-medium">
+                      <span className="text-blue-600">% {course.progress} Tamamlandı</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-600 rounded-full" style={{ width: `${course.progress}%` }}></div>
+                    </div>
+                  </div>
+                ) : (
+                  <button className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 font-medium rounded-xl text-sm transition-colors">
+                    Eğitime Başla
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'certificates' && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="glass p-6 rounded-2xl flex items-center gap-4 border-l-4 border-amber-500">
+            <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
+              <Award size={32} />
+            </div>
+            <div>
+              <h3 className="font-bold">İş Güvenliği Sertifikası</h3>
+              <p className="text-sm text-slate-500">Geçerlilik: 2026'ya kadar</p>
+              <div className="flex items-center gap-1 text-xs text-green-600 mt-1 font-medium">
+                <CheckCircle size={14} /> Doğrulanmış
+              </div>
+            </div>
+          </div>
+          <div className="glass p-6 rounded-2xl flex items-center gap-4 opacity-60 grayscale">
+            <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400">
+              <Lock size={32} />
+            </div>
+            <div>
+              <h3 className="font-bold">İleri Seviye Elektrik</h3>
+              <p className="text-sm text-slate-500">Eğitimi tamamla ve kilidi aç</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-// Needed icon import fallback
-import { Sun } from 'lucide-react';
