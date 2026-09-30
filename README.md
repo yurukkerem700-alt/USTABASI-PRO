@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/cover.png" alt="USTABAŞI PRO" width="100%"></p>
+
 # USTABAŞI Ekosistemi
 
 Türkiye'nin en büyük ustalık ve hizmet ekosistemi. Bu proje Vite, React, TailwindCSS ve Supabase kullanılarak geliştirilmiştir.
@@ -28,3 +30,7 @@ Vercel üzerine doğrudan deploy edilebilir. Build komutu:
 ```bash
 npm run build
 ```
+
+---
+
+© 2026 YÖRÜKHAN STÜDYO — Tüm hakları saklıdır. Bu projenin kodu, tasarımı, oyun fikri ve görselleri izinsiz kopyalanamaz, çoğaltılamaz veya ticari amaçla kullanılamaz.
